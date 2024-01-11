@@ -109,35 +109,38 @@ void setup()
   {
     Serial.println("The sensor is wake up mode");
   }
-  /**!
+  /**
      Do not touch the sensor probe when preheating the sensor.
      Place the sensor in clean air.
      The default calibration time is 3 minutes.
   */
-unsigned long startTime = millis();
-unsigned long calibrationTime = CALIBRATION_TIME * 60 * 1000;  // Convert minutes to milliseconds
+  unsigned long startTime = millis();
+  unsigned long calibrationTime = CALIBRATION_TIME * 60 * 1000; // Convert minutes to milliseconds
 
-while (!MICS.warmUpTime(CALIBRATION_TIME)) {
-  unsigned long elapsedTime = millis() - startTime;
+  while (!MICS.warmUpTime(CALIBRATION_TIME))
+  {
+    unsigned long elapsedTime = millis() - startTime;
 
-  // Prevent overflow by adjusting elapsedTime if needed:
-  if (elapsedTime > calibrationTime) {
-    elapsedTime = calibrationTime;
+    // Prevent overflow by adjusting elapsedTime if needed:
+    if (elapsedTime > calibrationTime)
+    {
+      elapsedTime = calibrationTime;
+    }
+
+    unsigned long remainingTime = calibrationTime - elapsedTime;
+
+    Serial.print("Waiting for MICS sensor warm-up... ");
+    if (remainingTime >= 60000)
+    {                                      // Check if more than a minute remains
+      Serial.print(remainingTime / 60000); // Print remaining time in minutes
+      Serial.print(" minutes ");
+      remainingTime %= 60000; // Get remaining seconds
+    }
+    Serial.print(remainingTime / 1000); // Print remaining seconds
+    Serial.println(" seconds remaining.");
+
+    delay(3000);
   }
-
-  unsigned long remainingTime = calibrationTime - elapsedTime;
-
-  Serial.print("Waiting for MICS sensor warm-up... ");
-  if (remainingTime >= 60000) {  // Check if more than a minute remains
-    Serial.print(remainingTime / 60000);  // Print remaining time in minutes
-    Serial.print(" minutes ");
-    remainingTime %= 60000;  // Get remaining seconds
-  }
-  Serial.print(remainingTime / 1000);  // Print remaining seconds
-  Serial.println(" seconds remaining.");
-
-  delay(3000);
-}
   Serial.println("Waiting until the MICS Sensor is Ready!");
 }
 
