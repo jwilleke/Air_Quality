@@ -2,6 +2,11 @@
 #include <config.h>
 #include "DFRobot_MICS.h"
 #include "DFRobot_AirQualitySensor.h"
+#include <WiFi.h>
+#include <AsyncTCP.h>
+#include <ESPAsyncWebServer.h>
+
+AsyncWebServer server(80);
 
 #define CALIBRATION_TIME 3 // needed for MICS
 #define I2C_COMMUNICATION  // I2C communication. Comment out this line of code if you want to use SPI communication.
@@ -21,6 +26,12 @@
 DFRobot_AirQualitySensor particle(&Wire, PM_I2C_ADDRESS);
 DFRobot_MICS_I2C MICS(&Wire, MICS_I2C_ADDRESS);
 
+char ssid[] = SECRET_SSID;  // your network SSID (name)
+char pass[] = SECRET_PASS;  // your network password (use for WPA, or use as key for WEP)
+
+/**
+ * A mrhod to not have to find and look up these things
+*/
 struct MICS_Addresses
 {
   const char *name;
@@ -71,9 +82,46 @@ void setup()
   Serial.begin(115200);
   while (!Serial)
     ; // Wait for serial to be ready
-      /**
-        Sensor initialization is used to initialize IIC, which is determined by the communication mode used at this time.
-      */
+  WiFi.mode(WIFI_STA);
+  WiFi.begin(ssid, password);
+  if (WiFi.waitForConnectResult() != WL_CONNECTED)
+  {
+    Serial.printf("WiFi Failed!\n");
+    return;
+  }
+
+  Serial.print("IP Address: ");
+  Serial.println(WiFi.localIP());
+
+  server.on("/", HTTP_GET, [](AsyncWebServerRequest *request)
+            { request->send(200, "text/plain", "Hello, world"); });
+
+  // Send a GET request to <IP>/get?message=<message>
+  server.on("/get", HTTP_GET, [](AsyncWebServerRequest *request)
+            {
+        String message;
+        if (request->hasParam(PARAM_MESSAGE)) {
+            message = request->getParam(PARAM_MESSAGE)->value();
+        } else {
+            message = "No message sent";
+        }
+        request->send(200, "text/plain", "Hello, GET: " + message); });
+
+  // Send a POST request to <IP>/post with a form field message set to <message>
+  server.on("/post", HTTP_POST, [](AsyncWebServerRequest *request)
+            {
+        String message;
+        if (request->hasParam(PARAM_MESSAGE, true)) {
+            message = request->getParam(PARAM_MESSAGE, true)->value();
+        } else {
+            message = "No message sent";
+        }
+        request->send(200, "text/plain", "Hello, POST: " + message); });
+
+  server.onNotFound(notFound);
+
+  server.begin();
+  // Sensor initialization is used to initialize IIC, which is determined by the communication mode used at this time.
   while (!particle.begin())
   {
     Serial.println("NO PM2.5 air quality sensor Found !");
@@ -85,7 +133,7 @@ void setup()
     Get sensor version number
   */
   uint8_t version = particle.gainVersion();
-  Serial.print("version is : ");
+  Serial.print("MICS version is : ");
   Serial.println(version);
   while (!MICS.begin())
   {
