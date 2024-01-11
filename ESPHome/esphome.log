@@ -1,0 +1,17 @@
+INFO ESPHome 2023.12.5
+INFO Reading configuration /config/esphome/air-quality-sensor.yaml...
+INFO Generating C++ source...
+INFO Compiling app...
+Processing esp32-test (board: firebeetle32; framework: arduino; platform: platformio/espressif32@5.4.0)
+--------------------------------------------------------------------------------
+Library Manager: Installing esphome/AsyncTCP-esphome @ 2.0.1
+INFO Installing esphome/AsyncTCP-esphome @ 2.0.1
+Unpacking  [####################################]  100%
+Library Manager: AsyncTCP-esphome@2.0.1 has been installed!
+INFO AsyncTCP-esphome@2.0.1 has been installed!
+Library Manager: Installing git+https://github.com/makertut/esphome-air-sensors/tree/main/DFRobot_MICS
+INFO Installing git+https://github.com/makertut/esphome-air-sensors/tree/main/DFRobot_MICS
+git version 2.39.2
+Cloning into '/data/cache/platformio/cache/tmp/pkg-installing-fwuqzhrk'...
+fatal: repository 'https://github.com/makertut/esphome-air-sensors/tree/main/DFRobot_MICS/' not found
+VCSBaseException: VCS: Could not process command ['git', 'clone', '--recursive', '--depth', '1', 'https://github.com/makertut/esphome-air-sensors/tree/main/DFRobot_MICS', '/data/cache/platformio/cache/tmp/pkg-installing-fwuqzhrk']
