@@ -1,5 +1,6 @@
 #include <Arduino.h>
 #include <config.h>
+#include <arduino_secrets.h>
 #include "DFRobot_MICS.h"
 #include "DFRobot_AirQualitySensor.h"
 #include <WiFi.h>
@@ -26,12 +27,23 @@ AsyncWebServer server(80);
 DFRobot_AirQualitySensor particle(&Wire, PM_I2C_ADDRESS);
 DFRobot_MICS_I2C MICS(&Wire, MICS_I2C_ADDRESS);
 
-char ssid[] = SECRET_SSID;  // your network SSID (name)
-char pass[] = SECRET_PASS;  // your network password (use for WPA, or use as key for WEP)
+// To get us out of trouble
+bool failure = false;
+int errorCondition = 0;
+
+// Derver stuff
+void notFound(AsyncWebServerRequest *request)
+{
+  request->send(404, "text/plain", "Not found");
+}
+const char *PARAM_MESSAGE = "message";
+
+char ssid[] = SECRET_SSID; // your network SSID (name)
+char pass[] = SECRET_PASS; // your network password (use for WPA, or use as key for WEP)
 
 /**
  * A mrhod to not have to find and look up these things
-*/
+ */
 struct MICS_Addresses
 {
   const char *name;
@@ -39,6 +51,24 @@ struct MICS_Addresses
 };
 
 MICS_Addresses mics_Address[] = {{"Carbon Monoxide", 0x01}, {"Methane", 0x02}, {"Ethanol", 0x03}, {"Propane", 0x04}, {"Iso Butane", 0x05}, {"Hydrogen", 0x06}, {"Hydrothion", 0x07}, {"Ammonia", 0x08}, {"Nitric Oxide", 0x09}, {"Nitrogen Dioxide", 0x10}};
+
+void get_network_info()
+{
+  if (WiFi.status() == WL_CONNECTED)
+  {
+    Serial.print("[*] Network information for ");
+    Serial.println(ssid);
+
+    Serial.println("[+] BSSID : " + WiFi.BSSIDstr());
+    Serial.print("[+] Gateway IP : ");
+    Serial.println(WiFi.gatewayIP());
+    Serial.print("[+] Subnet Mask : ");
+    Serial.println(WiFi.subnetMask());
+    Serial.println((String) "[+] RSSI : " + WiFi.RSSI() + " dB");
+    Serial.print("[+] ESP32 IP : ");
+    Serial.println(WiFi.localIP());
+  }
+}
 
 /**
  * Get the name of the gas from the hexValue
@@ -79,118 +109,102 @@ void dumpMICSData(uint8_t hexValue)
 
 void setup()
 {
-  Serial.begin(115200);
-  while (!Serial)
-    ; // Wait for serial to be ready
-  WiFi.mode(WIFI_STA);
-  WiFi.begin(ssid, password);
-  if (WiFi.waitForConnectResult() != WL_CONNECTED)
+  while (!failure)
   {
-    Serial.printf("WiFi Failed!\n");
-    return;
-  }
-
-  Serial.print("IP Address: ");
-  Serial.println(WiFi.localIP());
-
-  server.on("/", HTTP_GET, [](AsyncWebServerRequest *request)
-            { request->send(200, "text/plain", "Hello, world"); });
-
-  // Send a GET request to <IP>/get?message=<message>
-  server.on("/get", HTTP_GET, [](AsyncWebServerRequest *request)
-            {
-        String message;
-        if (request->hasParam(PARAM_MESSAGE)) {
-            message = request->getParam(PARAM_MESSAGE)->value();
-        } else {
-            message = "No message sent";
-        }
-        request->send(200, "text/plain", "Hello, GET: " + message); });
-
-  // Send a POST request to <IP>/post with a form field message set to <message>
-  server.on("/post", HTTP_POST, [](AsyncWebServerRequest *request)
-            {
-        String message;
-        if (request->hasParam(PARAM_MESSAGE, true)) {
-            message = request->getParam(PARAM_MESSAGE, true)->value();
-        } else {
-            message = "No message sent";
-        }
-        request->send(200, "text/plain", "Hello, POST: " + message); });
-
-  server.onNotFound(notFound);
-
-  server.begin();
-  // Sensor initialization is used to initialize IIC, which is determined by the communication mode used at this time.
-  while (!particle.begin())
-  {
-    Serial.println("NO PM2.5 air quality sensor Found !");
-    delay(1000);
-  }
-  Serial.println("PM2.5 air quality sensor Found!");
-  delay(1000);
-  /**
-    Get sensor version number
-  */
-  uint8_t version = particle.gainVersion();
-  Serial.print("MICS version is : ");
-  Serial.println(version);
-  while (!MICS.begin())
-  {
-    Serial.println("Communication with MICS device failed, please check connection");
-    delay(1000);
-  }
-  Serial.println("Communication with MICS device connected successful!");
-  /**!
-    Gets the power mode of the sensor
-    The sensor is in sleep mode when power is on,so it needs to wake up the sensor.
-    The data obtained in sleep mode is wrong
-   */
-  uint8_t mode = MICS.getPowerState();
-
-  if (mode == SLEEP_MODE)
-  {
-    MICS.wakeUpMode();
-    Serial.println("wake up sensor success!");
-  }
-  else
-  {
-    Serial.println("The sensor is wake up mode");
-  }
-  /**
-     Do not touch the sensor probe when preheating the sensor.
-     Place the sensor in clean air.
-     The default calibration time is 3 minutes.
-  */
-  unsigned long startTime = millis();
-  unsigned long calibrationTime = CALIBRATION_TIME * 60 * 1000; // Convert minutes to milliseconds
-
-  while (!MICS.warmUpTime(CALIBRATION_TIME))
-  {
-    unsigned long elapsedTime = millis() - startTime;
-
-    // Prevent overflow by adjusting elapsedTime if needed:
-    if (elapsedTime > calibrationTime)
+    Serial.begin(115200);
+    while (!Serial)
+      ; // Wait for serial to be ready
+    WiFi.mode(WIFI_STA);
+    WiFi.begin(ssid, pass);
+    // did we xonnext?
+    if (WiFi.waitForConnectResult() != WL_CONNECTED)
     {
-      elapsedTime = calibrationTime;
+      Serial.printf("WiFi Failed!\n");
+      // errorCondition = 42;
+      if (errorCondition > 0)
+      {
+        failure = true;
+        Serial.println("WiFi Failure occurred! (42)");
+        break;
+      }
     }
 
-    unsigned long remainingTime = calibrationTime - elapsedTime;
+    get_network_info();
 
-    Serial.print("Waiting for MICS sensor warm-up... ");
-    if (remainingTime >= 60000)
-    {                                      // Check if more than a minute remains
-      Serial.print(remainingTime / 60000); // Print remaining time in minutes
-      Serial.print(" minutes ");
-      remainingTime %= 60000; // Get remaining seconds
+    // get_network_info();
+
+    // Sensor initialization is used to initialize IIC, which is determined by the communication mode used at this time.
+    while (!particle.begin())
+    {
+      Serial.println("NO PM2.5 air quality sensor Found !");
+      delay(1000);
     }
-    Serial.print(remainingTime / 1000); // Print remaining seconds
-    Serial.println(" seconds remaining.");
+    Serial.println("PM2.5 air quality sensor Found!");
+    delay(1000);
+    /**
+      Get sensor version number
+    */
+    uint8_t version = particle.gainVersion();
+    Serial.print("MICS version is : ");
+    Serial.println(version);
+    while (!MICS.begin())
+    {
+      Serial.println("Communication with MICS device failed, please check connection");
+      delay(1000);
+    }
+    Serial.println("Communication with MICS device connected successful!");
+    /**!
+      Gets the power mode of the sensor
+      The sensor is in sleep mode when power is on,so it needs to wake up the sensor.
+      The data obtained in sleep mode is wrong
+     */
+    uint8_t mode = MICS.getPowerState();
 
-    delay(3000);
-  }
-  Serial.println("Waiting until the MICS Sensor is Ready!");
-}
+    if (mode == SLEEP_MODE)
+    {
+      MICS.wakeUpMode();
+      Serial.println("wake up sensor success!");
+    }
+    else
+    {
+      Serial.println("The sensor is wake up mode");
+    }
+    /**
+       Do not touch the sensor probe when preheating the sensor.
+       Place the sensor in clean air.
+       The default calibration time is 3 minutes.
+    */
+    unsigned long startTime = millis();
+    unsigned long calibrationTime = CALIBRATION_TIME * 60 * 1000; // Convert minutes to milliseconds
+
+    while (!MICS.warmUpTime(CALIBRATION_TIME))
+    {
+      unsigned long elapsedTime = millis() - startTime;
+
+      // Prevent overflow by adjusting elapsedTime if needed:
+      if (elapsedTime > calibrationTime)
+      {
+        elapsedTime = calibrationTime;
+      }
+
+      unsigned long remainingTime = calibrationTime - elapsedTime;
+
+      Serial.print("Waiting for MICS sensor warm-up... ");
+      if (remainingTime >= 60000)
+      {                                      // Check if more than a minute remains
+        Serial.print(remainingTime / 60000); // Print remaining time in minutes
+        Serial.print(" minutes ");
+        remainingTime %= 60000; // Get remaining seconds
+      }
+      Serial.print(remainingTime / 1000); // Print remaining seconds
+      Serial.println(" seconds remaining.");
+
+      delay(3000);
+    }
+    Serial.println("Waiting until the MICS Sensor is Ready!");
+    break; // Exits the outer loop as well
+  }        // end of while
+} // end of setup
 
 void loop()
 {
