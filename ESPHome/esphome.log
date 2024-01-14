@@ -1,17 +1,928 @@
-INFO ESPHome 2023.12.5
-INFO Reading configuration /config/esphome/air-quality-sensor.yaml...
-INFO Generating C++ source...
-INFO Compiling app...
-Processing esp32-test (board: firebeetle32; framework: arduino; platform: platformio/espressif32@5.4.0)
---------------------------------------------------------------------------------
-Library Manager: Installing esphome/AsyncTCP-esphome @ 2.0.1
-INFO Installing esphome/AsyncTCP-esphome @ 2.0.1
-Unpacking  [####################################]  100%
-Library Manager: AsyncTCP-esphome@2.0.1 has been installed!
-INFO AsyncTCP-esphome@2.0.1 has been installed!
-Library Manager: Installing git+https://github.com/makertut/esphome-air-sensors/tree/main/DFRobot_MICS
-INFO Installing git+https://github.com/makertut/esphome-air-sensors/tree/main/DFRobot_MICS
-git version 2.39.2
-Cloning into '/data/cache/platformio/cache/tmp/pkg-installing-fwuqzhrk'...
-fatal: repository 'https://github.com/makertut/esphome-air-sensors/tree/main/DFRobot_MICS/' not found
-VCSBaseException: VCS: Could not process command ['git', 'clone', '--recursive', '--depth', '1', 'https://github.com/makertut/esphome-air-sensors/tree/main/DFRobot_MICS', '/data/cache/platformio/cache/tmp/pkg-installing-fwuqzhrk']
+ets Jul 29 2019 12:21:46
+
+rst:[D][wifi:470]: Found networks:
+[I][wifi:514]: - 'SWIT2' (1E:E8:29:51:B6:84) [redacted]▂▄▆█
+[D][wifi:515]:     Channel: 6
+[D][wifi:516]:     RSSI: -57 dB
+[I][wifi:514]: - 'SWIT2' (76:AC:B9:AE:CA:70) [redacted]▂▄▆█
+[D][wifi:515]:     Channel: 11
+[D][wifi:516]:     RSSI: -57 dB
+[I][wifi:514]: - 'SWIT2' (7A:83:C2:19:D1:4A) [redacted]▂▄▆█
+[D][wifi:515]:     Channel: 1
+[D][wifi:516]:     RSSI: -58 dB
+[D][wifi:519]: - ''[redacted] (8A:83:C2:19:D1:4A) [redacted]▂▄▆█
+[D][wifi:519]: - 'HP-Print-14-officeprinter'[redacted] (D8:5D:E2:02:4C:14) [redacted]▂▄▆█
+[D][wifi:519]: - 'Guest-Network'[redacted] (18:E8:29:51:B6:84) [redacted]▂▄▆█
+[D][wifi:519]: - 'myiot'[redacted] (7E:83:C2:19:D1:4A) [redacted]▂▄▆█
+[D][wifi:519]: - ''[redacted] (86:83:C2:19:D1:4A) [redacted]▂▄▆█
+[D][wifi:519]: - ''[redacted] (2A:E8:29:51:B6:84) [redacted]▂▄▆█
+[D][wifi:519]: - 'myiot'[redacted] (76:AC:B9:BE:CA:70) [redacted]▂▄▆█
+[D][wifi:519]: - 'Guest-Network'[redacted] (74:AC:B9:AE:CA:70) [redacted]▂▄▆█
+[D][wifi:519]: - 'UIDMV_IoT'[redacted] (76:AC:B9:CE:CA:70) [redacted]▂▄▆█
+[D][wifi:519]: - 'Guest-Network'[redacted] (74:83:C2:19:D1:4A) [redacted]▂▄▆█
+[D][wifi:519]: - 'UIDMV_IoT'[redacted] (82:83:C2:19:D1:4A) [redacted]▂▄▆█
+[D][wifi:519]: - 'myiot'[redacted] (22:E8:29:51:B6:84) [redacted]▂▄▆█
+[D][wifi:519]: - 'UIDMV_IoT'[redacted] (26:E8:29:51:B6:84) [redacted]▂▄▆█
+[D][wifi:519]: - ''[redacted] (76:AC:B9:DE:CA:70) [redacted]▂▄▆█
+[D][wifi:519]: - ''[redacted] (2E:E8:29:51:B6:84) [redacted]▂▄▆█
+[D][wifi:519]: - 'SpectrumSetup-BB'[redacted] (FC:12:63:F4:88:B9) [redacted]▂▄▆█
+[D][wifi:519]: - 'DadNet'[redacted] (F4:69:42:C7:2F:F1) [redacted]▂▄▆█
+[D][wifi:519]: - 'CenturyLink6661'[redacted] (02:87:56:7B:DB:68) [redacted]▂▄▆█
+[I][wifi:300]: WiFi Connecting to 'SWIT2'...
+[I][wifi:587]: WiFi Connected!
+[C][wifi:405]:   Local MAC: B0:A7:32:36:29:A4
+[C][wifi:410]:   SSID: 'SWIT2'[redacted]
+[C][wifi:411]:   IP Address: 192.168.68.68
+[C][wifi:413]:   BSSID: 1E:E8:29:51:B6:84[redacted]
+[C][wifi:414]:   Hostname: 'air-quality-1'
+[C][wifi:416]:   Signal strength: -59 dB ▂▄▆█
+[C][wifi:420]:   Channel: 6
+[C][wifi:421]:   Subnet: 255.255.255.0
+[C][wifi:422]:   Gateway: 192.168.68.1
+[C][wifi:423]:   DNS1: 192.168.68.1
+[C][wifi:424]:   DNS2: 8.8.8.8
+[D][wifi:596]: Disabling AP...
+[C][ota:097]: Over-The-Air Updates:
+[C][ota:098]:   Address: air-quality-1.local:3232
+[C][ota:101]:   Using Password.
+[C][api:025]: Setting up Home Assistant API server...
+[D][custom:041]: Device connected successfully !
+[D][custom:048]: The sensor is wake up mode
+[D][custom:052]: Please wait until the warm-up time is over!
+[D][custom:052]: Please wait until the warm-up time is over!
+[D][custom:052]: Please wait until the warm-up time is over!
+[D][custom:052]: Please wait until the warm-up time is over!
+[D][custom:052]: Please wait until the warm-up time is over!
+E (26825) task_wdt: Task watchdog got triggered. The following tasks did not reset the watchdog in time:
+E (26825) task_wdt:  - loopTask (CPU 1)
+E (26825) task_wdt: Tasks currently running:
+E (26825) task_wdt: CPU 0: IDLE
+E (26825) task_wdt: CPU 1: IDLE
+E (26825) task_wdt: Aborting.
+
+abort() was called at PC 0x400f6010 on core 0
+
+
+Backtrace:0x40083acd:0x3ffbea4c |<-CORRUPTED
+
+
+
+
+ELF file SHA256: 0000000000000000
+
+Rebooting...
+ets Jul 29 2019 12:21:46
+
+rst:0xc (SW_CPU_RESET),boot:0x13 (SPI_FAST_FLASH_BOOT)
+configsip: 0, SPIWP:0xee
+clk_drv:0x00,q_drv:0x00,d_drv:0x00,cs0_drv:0x00,hd_drv:0x00,wp_drv:0x00
+mode:DIO, clock div:2
+load:0x3fff0030,len:1184
+load:0x40078000,len:13132
+load:0x40080400,len:3036
+entry 0x400805e4
+[I][logger:355]: Log initialized
+[C][ota:473]: There have been 2 suspected unsuccessful boot attempts.
+[D][esp32.preferences:114]: Saving 1 preferences to flash...
+[D][esp32.preferences:143]: Saving 1 preferences to flash: 0 cached, 1 written, 0 failed
+[I][app:029]: Running through setup()...
+[C][wifi:038]: Setting up WiFi...
+[C][wifi:051]: Starting WiFi...
+[C][wifi:052]:   Local MAC: B0:A7:32:36:29:A4
+[D][wifi:455]: Starting scan...
+[D][wifi:470]: Found networks:
+[I][wifi:514]: - 'SWIT2' (76:AC:B9:AE:CA:70) [redacted]▂▄▆█
+[D][wifi:515]:     Channel: 11
+[D][wifi:516]:     RSSI: -56 dB
+[I][wifi:514]: - 'SWIT2' (1E:E8:29:51:B6:84) [redacted]▂▄▆█
+[D][wifi:515]:     Channel: 6
+[D][wifi:516]:     RSSI: -58 dB
+[I][wifi:514]: - 'SWIT2' (7A:83:C2:19:D1:4A) [redacted]▂▄▆█
+[D][wifi:515]:     Channel: 1
+[D][wifi:516]:     RSSI: -59 dB
+[D][wifi:519]: - 'HP-Print-14-officeprinter'[redacted] (D8:5D:E2:02:4C:14) [redacted]▂▄▆█
+[D][wifi:519]: - ''[redacted] (8A:83:C2:19:D1:4A) [redacted]▂▄▆█
+[D][wifi:519]: - 'UIDMV_IoT'[redacted] (76:AC:B9:CE:CA:70) [redacted]▂▄▆█
+[D][wifi:519]: - 'Guest-Network'[redacted] (74:AC:B9:AE:CA:70) [redacted]▂▄▆█
+[D][wifi:519]: - ''[redacted] (76:AC:B9:DE:CA:70) [redacted]▂▄▆█
+[D][wifi:519]: - 'myiot'[redacted] (22:E8:29:51:B6:84) [redacted]▂▄▆█
+[D][wifi:519]: - 'UIDMV_IoT'[redacted] (26:E8:29:51:B6:84) [redacted]▂▄▆█
+[D][wifi:519]: - 'myiot'[redacted] (76:AC:B9:BE:CA:70) [redacted]▂▄▆█
+[D][wifi:519]: - 'UIDMV_IoT'[redacted] (82:83:C2:19:D1:4A) [redacted]▂▄▆█
+[D][wifi:519]: - ''[redacted] (86:83:C2:19:D1:4A) [redacted]▂▄▆█
+[D][wifi:519]: - 'Guest-Network'[redacted] (18:E8:29:51:B6:84) [redacted]▂▄▆█
+[D][wifi:519]: - ''[redacted] (2A:E8:29:51:B6:84) [redacted]▂▄▆█
+[D][wifi:519]: - 'myiot'[redacted] (7E:83:C2:19:D1:4A) [redacted]▂▄▆█
+[D][wifi:519]: - 'Guest-Network'[redacted] (74:83:C2:19:D1:4A) [redacted]▂▄▆█
+[D][wifi:519]: - ''[redacted] (2E:E8:29:51:B6:84) [redacted]▂▄▆█
+[D][wifi:519]: - 'DadNet'[redacted] (F4:69:42:C7:2F:F1) [redacted]▂▄▆█
+[D][wifi:519]: - 'CenturyLink6661'[redacted] (02:87:56:7B:DB:68) [redacted]▂▄▆█
+[I][wifi:300]: WiFi Connecting to 'SWIT2'...
+[I][wifi:587]: WiFi Connected!
+[C][wifi:405]:   Local MAC: B0:A7:32:36:29:A4
+[C][wifi:410]:   SSID: 'SWIT2'[redacted]
+[C][wifi:411]:   IP Address: 192.168.68.68
+[C][wifi:413]:   BSSID: 76:AC:B9:AE:CA:70[redacted]
+[C][wifi:414]:   Hostname: 'air-quality-1'
+[C][wifi:416]:   Signal strength: -51 dB ▂▄▆█
+[C][wifi:420]:   Channel: 11
+[C][wifi:421]:   Subnet: 255.255.255.0
+[C][wifi:422]:   Gateway: 192.168.68.1
+[C][wifi:423]:   DNS1: 192.168.68.1
+[C][wifi:424]:   DNS2: 8.8.8.8
+[D][wifi:596]: Disabling AP...
+[C][ota:097]: Over-The-Air Updates:
+[C][ota:098]:   Address: air-quality-1.local:3232
+[C][ota:101]:   Using Password.
+[W][ota:107]: Last Boot was an unhandled reset, will proceed to safe mode in 8 restarts
+[C][api:025]: Setting up Home Assistant API server...
+[D][custom:041]: Device connected successfully !
+[D][custom:048]: The sensor is wake up mode
+[D][custom:052]: Please wait until the warm-up time is over!
+[D][custom:052]: Please wait until the warm-up time is over!
+[D][custom:052]: Please wait until the warm-up time is over!
+[D][custom:052]: Please wait until the warm-up time is over!
+[D][custom:052]: Please wait until the warm-up time is over!
+E (26639) task_wdt: Task watchdog got triggered. The following tasks did not reset the watchdog in time:
+E (26639) task_wdt:  - loopTask (CPU 1)
+E (26639) task_wdt: Tasks currently running:
+E (26639) task_wdt: CPU 0: IDLE
+E (26639) task_wdt: CPU 1: IDLE
+E (26639) task_wdt: Aborting.
+
+abort() was called at PC 0x400f6010 on core 0
+
+
+Backtrace:0x40083acd:0x3ffbea4c |<-CORRUPTED
+
+
+
+
+ELF file SHA256: 0000000000000000
+
+Rebooting...
+ets Jul 29 2019 12:21:46
+
+rst:0xc (SW_CPU_RESET),boot:0x13 (SPI_FAST_FLASH_BOOT)
+configsip: 0, SPIWP:0xee
+clk_drv:0x00,q_drv:0x00,d_drv:0x00,cs0_drv:0x00,hd_drv:0x00,wp_drv:0x00
+mode:DIO, clock div:2
+load:0x3fff0030,len:1184
+load:0x40078000,len:13132
+load:0x40080400,len:3036
+entry 0x400805e4
+[I][logger:355]: Log initialized
+[C][ota:473]: There have been 3 suspected unsuccessful boot attempts.
+[D][esp32.preferences:114]: Saving 1 preferences to flash...
+[D][esp32.preferences:143]: Saving 1 preferences to flash: 0 cached, 1 written, 0 failed
+[I][app:029]: Running through setup()...
+[C][wifi:038]: Setting up WiFi...
+[C][wifi:051]: Starting WiFi...
+[C][wifi:052]:   Local MAC: B0:A7:32:36:29:A4
+[D][wifi:455]: Starting scan...
+[D][wifi:470]: Found networks:
+[I][wifi:514]: - 'SWIT2' (76:AC:B9:AE:CA:70) [redacted]▂▄▆█
+[D][wifi:515]:     Channel: 11
+[D][wifi:516]:     RSSI: -50 dB
+[I][wifi:514]: - 'SWIT2' (1E:E8:29:51:B6:84) [redacted]▂▄▆█
+[D][wifi:515]:     Channel: 6
+[D][wifi:516]:     RSSI: -58 dB
+[I][wifi:514]: - 'SWIT2' (7A:83:C2:19:D1:4A) [redacted]▂▄▆█
+[D][wifi:515]:     Channel: 1
+[D][wifi:516]:     RSSI: -60 dB
+[D][wifi:519]: - 'HP-Print-14-officeprinter'[redacted] (D8:5D:E2:02:4C:14) [redacted]▂▄▆█
+[D][wifi:519]: - 'myiot'[redacted] (76:AC:B9:BE:CA:70) [redacted]▂▄▆█
+[D][wifi:519]: - 'Guest-Network'[redacted] (74:AC:B9:AE:CA:70) [redacted]▂▄▆█
+[D][wifi:519]: - ''[redacted] (76:AC:B9:DE:CA:70) [redacted]▂▄▆█
+[D][wifi:519]: - 'UIDMV_IoT'[redacted] (76:AC:B9:CE:CA:70) [redacted]▂▄▆█
+[D][wifi:519]: - ''[redacted] (8A:83:C2:19:D1:4A) [redacted]▂▄▆█
+[D][wifi:519]: - 'UIDMV_IoT'[redacted] (26:E8:29:51:B6:84) [redacted]▂▄▆█
+[D][wifi:519]: - 'Guest-Network'[redacted] (18:E8:29:51:B6:84) [redacted]▂▄▆█
+[D][wifi:519]: - 'myiot'[redacted] (22:E8:29:51:B6:84) [redacted]▂▄▆█
+[D][wifi:519]: - ''[redacted] (2A:E8:29:51:B6:84) [redacted]▂▄▆█
+[D][wifi:519]: - 'UIDMV_IoT'[redacted] (82:83:C2:19:D1:4A) [redacted]▂▄▆█
+[D][wifi:519]: - ''[redacted] (86:83:C2:19:D1:4A) [redacted]▂▄▆█
+[D][wifi:519]: - 'Guest-Network'[redacted] (74:83:C2:19:D1:4A) [redacted]▂▄▆█
+[D][wifi:519]: - 'myiot'[redacted] (7E:83:C2:19:D1:4A) [redacted]▂▄▆█
+[D][wifi:519]: - ''[redacted] (2E:E8:29:51:B6:84) [redacted]▂▄▆█
+[D][wifi:519]: - 'SpectrumSetup-BB'[redacted] (FC:12:63:F4:88:B9) [redacted]▂▄▆█
+[D][wifi:519]: - 'DadNet'[redacted] (F4:69:42:C7:2F:F1) [redacted]▂▄▆█
+[D][wifi:519]: - 'CenturyLink6661'[redacted] (02:87:56:7B:DB:68) [redacted]▂▄▆█
+[I][wifi:300]: WiFi Connecting to 'SWIT2'...
+[W][wifi_esp32:458]: Event: Disconnected ssid='SWIT2' bssid=76:AC:B9:AE:CA:70[redacted] reason='Authentication Failed'
+[W][wifi:639]: WiFi Unknown connection status 0
+[I][wifi:300]: WiFi Connecting to 'SWIT2'...
+[W][wifi_esp32:458]: Event: Disconnected ssid='SWIT2' bssid=76:AC:B9:AE:CA:70[redacted] reason='Authentication Failed'
+[W][wifi:634]: Connecting to WiFi network failed. Are the credentials wrong?
+[D][wifi:455]: Starting scan...
+[D][wifi:470]: Found networks:
+[I][wifi:514]: - 'SWIT2' (1E:E8:29:51:B6:84) [redacted]▂▄▆█
+[D][wifi:515]:     Channel: 6
+[D][wifi:516]:     RSSI: -58 dB
+[I][wifi:514]: - 'SWIT2' (7A:83:C2:19:D1:4A) [redacted]▂▄▆█
+[D][wifi:515]:     Channel: 1
+[D][wifi:516]:     RSSI: -59 dB
+[I][wifi:514]: - 'SWIT2' (76:AC:B9:AE:CA:70) [redacted]▂▄▆█
+[D][wifi:515]:     Channel: 11
+[D][wifi:516]:     RSSI: -50 dB
+[D][wifi:519]: - 'HP-Print-14-officeprinter'[redacted] (D8:5D:E2:02:4C:14) [redacted]▂▄▆█
+[D][wifi:519]: - ''[redacted] (76:AC:B9:DE:CA:70) [redacted]▂▄▆█
+[D][wifi:519]: - 'UIDMV_IoT'[redacted] (76:AC:B9:CE:CA:70) [redacted]▂▄▆█
+[D][wifi:519]: - 'myiot'[redacted] (76:AC:B9:BE:CA:70) [redacted]▂▄▆█
+[D][wifi:519]: - 'Guest-Network'[redacted] (74:AC:B9:AE:CA:70) [redacted]▂▄▆█
+[D][wifi:519]: - ''[redacted] (8A:83:C2:19:D1:4A) [redacted]▂▄▆█
+[D][wifi:519]: - 'myiot'[redacted] (22:E8:29:51:B6:84) [redacted]▂▄▆█
+[D][wifi:519]: - 'UIDMV_IoT'[redacted] (26:E8:29:51:B6:84) [redacted]▂▄▆█
+[D][wifi:519]: - ''[redacted] (2A:E8:29:51:B6:84) [redacted]▂▄▆█
+[D][wifi:519]: - 'myiot'[redacted] (7E:83:C2:19:D1:4A) [redacted]▂▄▆█
+[D][wifi:519]: - ''[redacted] (86:83:C2:19:D1:4A) [redacted]▂▄▆█
+[D][wifi:519]: - 'Guest-Network'[redacted] (18:E8:29:51:B6:84) [redacted]▂▄▆█
+[D][wifi:519]: - 'Guest-Network'[redacted] (74:83:C2:19:D1:4A) [redacted]▂▄▆█
+[D][wifi:519]: - 'UIDMV_IoT'[redacted] (82:83:C2:19:D1:4A) [redacted]▂▄▆█
+[D][wifi:519]: - ''[redacted] (2E:E8:29:51:B6:84) [redacted]▂▄▆█
+[D][wifi:519]: - 'SpectrumSetup-BB'[redacted] (FC:12:63:F4:88:B9) [redacted]▂▄▆█
+[D][wifi:519]: - 'DadNet'[redacted] (F4:69:42:C7:2F:F1) [redacted]▂▄▆█
+[D][wifi:519]: - 'CenturyLink6661'[redacted] (02:87:56:7B:DB:68) [redacted]▂▄▆█
+[D][wifi:519]: - 'CenturyLink6589'[redacted] (02:6A:E3:F4:FB:C5) [redacted]▂▄▆█
+[I][wifi:300]: WiFi Connecting to 'SWIT2'...
+[W][wifi:582]: Incomplete connection.
+[I][wifi:300]: WiFi Connecting to 'SWIT2'...
+[I][wifi:587]: WiFi Connected!
+[C][wifi:405]:   Local MAC: B0:A7:32:36:29:A4
+[C][wifi:410]:   SSID: 'SWIT2'[redacted]
+[C][wifi:411]:   IP Address: 192.168.68.68
+[C][wifi:413]:   BSSID: 1E:E8:29:51:B6:84[redacted]
+[C][wifi:414]:   Hostname: 'air-quality-1'
+[C][wifi:416]:   Signal strength: -58 dB ▂▄▆█
+[C][wifi:420]:   Channel: 6
+[C][wifi:421]:   Subnet: 255.255.255.0
+[C][wifi:422]:   Gateway: 192.168.68.1
+[C][wifi:423]:   DNS1: 192.168.68.1
+[C][wifi:424]:   DNS2: 8.8.8.8
+[D][wifi:596]: Disabling AP...
+[C][ota:097]: Over-The-Air Updates:
+[C][ota:098]:   Address: air-quality-1.local:3232
+[C][ota:101]:   Using Password.
+[W][ota:107]: Last Boot was an unhandled reset, will proceed to safe mode in 7 restarts
+[C][api:025]: Setting up Home Assistant API server...
+[D][custom:041]: Device connected successfully !
+[D][custom:048]: The sensor is wake up mode
+[D][custom:052]: Please wait until the warm-up time is over!
+[D][custom:052]: Please wait until the warm-up time is over!
+[D][custom:052]: Please wait until the warm-up time is over!
+[D][custom:052]: Please wait until the warm-up time is over!
+[D][custom:052]: Please wait until the warm-up time is over!
+E (28115) task_wdt: Task watchdog got triggered. The following tasks did not reset the watchdog in time:
+E (28115) task_wdt:  - loopTask (CPU 1)
+E (28115) task_wdt: Tasks currently running:
+E (28115) task_wdt: CPU 0: IDLE
+E (28115) task_wdt: CPU 1: IDLE
+E (28115) task_wdt: Aborting.
+
+abort() was called at PC 0x400f6010 on core 0
+
+
+Backtrace:0x40083acd:0x3ffbea4c |<-CORRUPTED
+
+
+
+
+ELF file SHA256: 0000000000000000
+
+Rebooting...
+ets Jul 29 2019 12:21:46
+
+rst:0xc (SW_CPU_RESET),boot:0x13 (SPI_FAST_FLASH_BOOT)
+configsip: 0, SPIWP:0xee
+clk_drv:0x00,q_drv:0x00,d_drv:0x00,cs0_drv:0x00,hd_drv:0x00,wp_drv:0x00
+mode:DIO, clock div:2
+load:0x3fff0030,len:1184
+load:0x40078000,len:13132
+load:0x40080400,len:3036
+entry 0x400805e4
+[I][logger:355]: Log initialized
+[C][ota:473]: There have been 4 suspected unsuccessful boot attempts.
+[D][esp32.preferences:114]: Saving 1 preferences to flash...
+[D][esp32.preferences:143]: Saving 1 preferences to flash: 0 cached, 1 written, 0 failed
+[I][app:029]: Running through setup()...
+[C][wifi:038]: Setting up WiFi...
+[C][wifi:051]: Starting WiFi...
+[C][wifi:052]:   Local MAC: B0:A7:32:36:29:A4
+[D][wifi:455]: Starting scan...
+[D][wifi:470]: Found networks:
+[I][wifi:514]: - 'SWIT2' (76:AC:B9:AE:CA:70) [redacted]▂▄▆█
+[D][wifi:515]:     Channel: 11
+[D][wifi:516]:     RSSI: -53 dB
+[I][wifi:514]: - 'SWIT2' (1E:E8:29:51:B6:84) [redacted]▂▄▆█
+[D][wifi:515]:     Channel: 6
+[D][wifi:516]:     RSSI: -58 dB
+[I][wifi:514]: - 'SWIT2' (7A:83:C2:19:D1:4A) [redacted]▂▄▆█
+[D][wifi:515]:     Channel: 1
+[D][wifi:516]:     RSSI: -60 dB
+[D][wifi:519]: - 'HP-Print-14-officeprinter'[redacted] (D8:5D:E2:02:4C:14) [redacted]▂▄▆█
+[D][wifi:519]: - ''[redacted] (76:AC:B9:DE:CA:70) [redacted]▂▄▆█
+[D][wifi:519]: - ''[redacted] (8A:83:C2:19:D1:4A) [redacted]▂▄▆█
+[D][wifi:519]: - 'Guest-Network'[redacted] (74:AC:B9:AE:CA:70) [redacted]▂▄▆█
+[D][wifi:519]: - 'UIDMV_IoT'[redacted] (76:AC:B9:CE:CA:70) [redacted]▂▄▆█
+[D][wifi:519]: - 'myiot'[redacted] (76:AC:B9:BE:CA:70) [redacted]▂▄▆█
+[D][wifi:519]: - ''[redacted] (2A:E8:29:51:B6:84) [redacted]▂▄▆█
+[D][wifi:519]: - 'myiot'[redacted] (22:E8:29:51:B6:84) [redacted]▂▄▆█
+[D][wifi:519]: - 'UIDMV_IoT'[redacted] (82:83:C2:19:D1:4A) [redacted]▂▄▆█
+[D][wifi:519]: - ''[redacted] (86:83:C2:19:D1:4A) [redacted]▂▄▆█
+[D][wifi:519]: - 'Guest-Network'[redacted] (18:E8:29:51:B6:84) [redacted]▂▄▆█
+[D][wifi:519]: - 'UIDMV_IoT'[redacted] (26:E8:29:51:B6:84) [redacted]▂▄▆█
+[D][wifi:519]: - 'Guest-Network'[redacted] (74:83:C2:19:D1:4A) [redacted]▂▄▆█
+[D][wifi:519]: - 'myiot'[redacted] (7E:83:C2:19:D1:4A) [redacted]▂▄▆█
+[D][wifi:519]: - ''[redacted] (2E:E8:29:51:B6:84) [redacted]▂▄▆█
+[D][wifi:519]: - 'SpectrumSetup-BB'[redacted] (FC:12:63:F4:88:B9) [redacted]▂▄▆█
+[D][wifi:519]: - 'CenturyLink6661'[redacted] (02:87:56:7B:DB:68) [redacted]▂▄▆█
+[D][wifi:519]: - 'DadNet'[redacted] (F4:69:42:C7:2F:F1) [redacted]▂▄▆█
+[I][wifi:300]: WiFi Connecting to 'SWIT2'...
+[I][wifi:587]: WiFi Connected!
+[C][wifi:405]:   Local MAC: B0:A7:32:36:29:A4
+[C][wifi:410]:   SSID: 'SWIT2'[redacted]
+[C][wifi:411]:   IP Address: 192.168.68.68
+[C][wifi:413]:   BSSID: 76:AC:B9:AE:CA:70[redacted]
+[C][wifi:414]:   Hostname: 'air-quality-1'
+[C][wifi:416]:   Signal strength: -52 dB ▂▄▆█
+[C][wifi:420]:   Channel: 11
+[C][wifi:421]:   Subnet: 255.255.255.0
+[C][wifi:422]:   Gateway: 192.168.68.1
+[C][wifi:423]:   DNS1: 192.168.68.1
+[C][wifi:424]:   DNS2: 8.8.8.8
+[D][wifi:596]: Disabling AP...
+[C][ota:097]: Over-The-Air Updates:
+[C][ota:098]:   Address: air-quality-1.local:3232
+[C][ota:101]:   Using Password.
+[W][ota:107]: Last Boot was an unhandled reset, will proceed to safe mode in 6 restarts
+[C][api:025]: Setting up Home Assistant API server...
+[D][custom:041]: Device connected successfully !
+[D][custom:048]: The sensor is wake up mode
+[D][custom:052]: Please wait until the warm-up time is over!
+[D][custom:052]: Please wait until the warm-up time is over!
+[D][custom:052]: Please wait until the warm-up time is over!
+[D][custom:052]: Please wait until the warm-up time is over!
+[D][custom:052]: Please wait until the warm-up time is over!
+E (26875) task_wdt: Task watchdog got triggered. The following tasks did not reset the watchdog in time:
+E (26875) task_wdt:  - loopTask (CPU 1)
+E (26875) task_wdt: Tasks currently running:
+E (26875) task_wdt: CPU 0: IDLE
+E (26875) task_wdt: CPU 1: IDLE
+E (26875) task_wdt: Aborting.
+
+abort() was called at PC 0x400f6010 on core 0
+
+
+Backtrace:0x40083acd:0x3ffbea4c |<-CORRUPTED
+
+
+
+
+ELF file SHA256: 0000000000000000
+
+Rebooting...
+ets Jul 29 2019 12:21:46
+
+rst:0xc (SW_CPU_RESET),boot:0x13 (SPI_FAST_FLASH_BOOT)
+configsip: 0, SPIWP:0xee
+clk_drv:0x00,q_drv:0x00,d_drv:0x00,cs0_drv:0x00,hd_drv:0x00,wp_drv:0x00
+mode:DIO, clock div:2
+load:0x3fff0030,len:1184
+load:0x40078000,len:13132
+load:0x40080400,len:3036
+entry 0x400805e4
+[I][logger:355]: Log initialized
+[C][ota:473]: There have been 5 suspected unsuccessful boot attempts.
+[D][esp32.preferences:114]: Saving 1 preferences to flash...
+[D][esp32.preferences:143]: Saving 1 preferences to flash: 0 cached, 1 written, 0 failed
+[I][app:029]: Running through setup()...
+[C][wifi:038]: Setting up WiFi...
+[C][wifi:051]: Starting WiFi...
+[C][wifi:052]:   Local MAC: B0:A7:32:36:29:A4
+[D][wifi:455]: Starting scan...
+[D][wifi:470]: Found networks:
+[I][wifi:514]: - 'SWIT2' (76:AC:B9:AE:CA:70) [redacted]▂▄▆█
+[D][wifi:515]:     Channel: 11
+[D][wifi:516]:     RSSI: -54 dB
+[I][wifi:514]: - 'SWIT2' (1E:E8:29:51:B6:84) [redacted]▂▄▆█
+[D][wifi:515]:     Channel: 6
+[D][wifi:516]:     RSSI: -59 dB
+[I][wifi:514]: - 'SWIT2' (7A:83:C2:19:D1:4A) [redacted]▂▄▆█
+[D][wifi:515]:     Channel: 1
+[D][wifi:516]:     RSSI: -60 dB
+[D][wifi:519]: - 'HP-Print-14-officeprinter'[redacted] (D8:5D:E2:02:4C:14) [redacted]▂▄▆█
+[D][wifi:519]: - ''[redacted] (8A:83:C2:19:D1:4A) [redacted]▂▄▆█
+[D][wifi:519]: - 'Guest-Network'[redacted] (74:AC:B9:AE:CA:70) [redacted]▂▄▆█
+[D][wifi:519]: - 'UIDMV_IoT'[redacted] (76:AC:B9:CE:CA:70) [redacted]▂▄▆█
+[D][wifi:519]: - 'myiot'[redacted] (76:AC:B9:BE:CA:70) [redacted]▂▄▆█
+[D][wifi:519]: - ''[redacted] (76:AC:B9:DE:CA:70) [redacted]▂▄▆█
+[D][wifi:519]: - ''[redacted] (2A:E8:29:51:B6:84) [redacted]▂▄▆█
+[D][wifi:519]: - 'myiot'[redacted] (22:E8:29:51:B6:84) [redacted]▂▄▆█
+[D][wifi:519]: - 'UIDMV_IoT'[redacted] (26:E8:29:51:B6:84) [redacted]▂▄▆█
+[D][wifi:519]: - 'myiot'[redacted] (7E:83:C2:19:D1:4A) [redacted]▂▄▆█
+[D][wifi:519]: - 'UIDMV_IoT'[redacted] (82:83:C2:19:D1:4A) [redacted]▂▄▆█
+[D][wifi:519]: - ''[redacted] (86:83:C2:19:D1:4A) [redacted]▂▄▆█
+[D][wifi:519]: - 'Guest-Network'[redacted] (18:E8:29:51:B6:84) [redacted]▂▄▆█
+[D][wifi:519]: - 'Guest-Network'[redacted] (74:83:C2:19:D1:4A) [redacted]▂▄▆█
+[D][wifi:519]: - ''[redacted] (2E:E8:29:51:B6:84) [redacted]▂▄▆█
+[D][wifi:519]: - 'DadNet'[redacted] (F4:69:42:C7:2F:F1) [redacted]▂▄▆█
+[D][wifi:519]: - 'SpectrumSetup-BB'[redacted] (FC:12:63:F4:88:B9) [redacted]▂▄▆█
+[D][wifi:519]: - 'CenturyLink6661'[redacted] (02:87:56:7B:DB:68) [redacted]▂▄▆█
+[I][wifi:300]: WiFi Connecting to 'SWIT2'...
+[W][wifi_esp32:458]: Event: Disconnected ssid='SWIT2' bssid=76:AC:B9:AE:CA:70[redacted] reason='Authentication Failed'
+[W][wifi:639]: WiFi Unknown connection status 0
+[I][wifi:300]: WiFi Connecting to 'SWIT2'...
+[W][wifi_esp32:458]: Event: Disconnected ssid='SWIT2' bssid=76:AC:B9:AE:CA:70[redacted] reason='Authentication Failed'
+[W][wifi:634]: Connecting to WiFi network failed. Are the credentials wrong?
+[D][wifi:455]: Starting scan...
+[D][wifi:470]: Found networks:
+[I][wifi:514]: - 'SWIT2' (1E:E8:29:51:B6:84) [redacted]▂▄▆█
+[D][wifi:515]:     Channel: 6
+[D][wifi:516]:     RSSI: -56 dB
+[I][wifi:514]: - 'SWIT2' (7A:83:C2:19:D1:4A) [redacted]▂▄▆█
+[D][wifi:515]:     Channel: 1
+[D][wifi:516]:     RSSI: -59 dB
+[I][wifi:514]: - 'SWIT2' (76:AC:B9:AE:CA:70) [redacted]▂▄▆█
+[D][wifi:515]:     Channel: 11
+[D][wifi:516]:     RSSI: -52 dB
+[D][wifi:519]: - 'HP-Print-14-officeprinter'[redacted] (D8:5D:E2:02:4C:14) [redacted]▂▄▆█
+[D][wifi:519]: - 'UIDMV_IoT'[redacted] (76:AC:B9:CE:CA:70) [redacted]▂▄▆█
+[D][wifi:519]: - ''[redacted] (76:AC:B9:DE:CA:70) [redacted]▂▄▆█
+[D][wifi:519]: - ''[redacted] (8A:83:C2:19:D1:4A) [redacted]▂▄▆█
+[D][wifi:519]: - 'myiot'[redacted] (76:AC:B9:BE:CA:70) [redacted]▂▄▆█
+[D][wifi:519]: - 'Guest-Network'[redacted] (74:AC:B9:AE:CA:70) [redacted]▂▄▆█
+[D][wifi:519]: - 'myiot'[redacted] (22:E8:29:51:B6:84) [redacted]▂▄▆█
+[D][wifi:519]: - ''[redacted] (2A:E8:29:51:B6:84) [redacted]▂▄▆█
+[D][wifi:519]: - 'UIDMV_IoT'[redacted] (26:E8:29:51:B6:84) [redacted]▂▄▆█
+[D][wifi:519]: - 'Guest-Network'[redacted] (18:E8:29:51:B6:84) [redacted]▂▄▆█
+[D][wifi:519]: - 'Guest-Network'[redacted] (74:83:C2:19:D1:4A) [redacted]▂▄▆█
+[D][wifi:519]: - 'UIDMV_IoT'[redacted] (82:83:C2:19:D1:4A) [redacted]▂▄▆█
+[D][wifi:519]: - 'myiot'[redacted] (7E:83:C2:19:D1:4A) [redacted]▂▄▆█
+[D][wifi:519]: - ''[redacted] (86:83:C2:19:D1:4A) [redacted]▂▄▆█
+[D][wifi:519]: - ''[redacted] (2E:E8:29:51:B6:84) [redacted]▂▄▆█
+[D][wifi:519]: - 'SpectrumSetup-BB'[redacted] (FC:12:63:F4:88:B9) [redacted]▂▄▆█
+[D][wifi:519]: - 'CenturyLink6661'[redacted] (02:87:56:7B:DB:68) [redacted]▂▄▆█
+[I][wifi:300]: WiFi Connecting to 'SWIT2'...
+[W][wifi:582]: Incomplete connection.
+[W][wifi_esp32:458]: Event: Disconnected ssid='SWIT2' bssid=76:AC:B9:AE:CA:70[redacted] reason='Association Leave'
+[I][wifi:587]: WiFi Connected!
+[C][wifi:405]:   Local MAC: B0:A7:32:36:29:A4
+[C][wifi:410]:   SSID: 'SWIT2'[redacted]
+[C][wifi:411]:   IP Address: 192.168.68.68
+[C][wifi:413]:   BSSID: 1E:E8:29:51:B6:84[redacted]
+[C][wifi:414]:   Hostname: 'air-quality-1'
+[C][wifi:416]:   Signal strength: -58 dB ▂▄▆█
+[C][wifi:420]:   Channel: 6
+[C][wifi:421]:   Subnet: 255.255.255.0
+[C][wifi:422]:   Gateway: 192.168.68.1
+[C][wifi:423]:   DNS1: 192.168.68.1
+[C][wifi:424]:   DNS2: 8.8.8.8
+[D][wifi:596]: Disabling AP...
+[C][ota:097]: Over-The-Air Updates:
+[C][ota:098]:   Address: air-quality-1.local:3232
+[C][ota:101]:   Using Password.
+[W][ota:107]: Last Boot was an unhandled reset, will proceed to safe mode in 5 restarts
+[C][api:025]: Setting up Home Assistant API server...
+[D][custom:041]: Device connected successfully !
+[D][custom:048]: The sensor is wake up mode
+[D][custom:052]: Please wait until the warm-up time is over!
+[D][custom:052]: Please wait until the warm-up time is over!
+[D][custom:052]: Please wait until the warm-up time is over!
+[D][custom:052]: Please wait until the warm-up time is over!
+[D][custom:052]: Please wait until the warm-up time is over!
+E (28505) task_wdt: Task watchdog got triggered. The following tasks did not reset the watchdog in time:
+E (28505) task_wdt:  - loopTask (CPU 1)
+E (28505) task_wdt: Tasks currently running:
+E (28505) task_wdt: CPU 0: IDLE
+E (28505) task_wdt: CPU 1: IDLE
+E (28505) task_wdt: Aborting.
+
+abort() was called at PC 0x400f6010 on core 0
+
+
+Backtrace:0x40083acd:0x3ffbea4c |<-CORRUPTED
+
+
+
+
+ELF file SHA256: 0000000000000000
+
+Rebooting...
+ets Jul 29 2019 12:21:46
+
+rst:0xc (SW_CPU_RESET),boot:0x13 (SPI_FAST_FLASH_BOOT)
+configsip: 0, SPIWP:0xee
+clk_drv:0x00,q_drv:0x00,d_drv:0x00,cs0_drv:0x00,hd_drv:0x00,wp_drv:0x00
+mode:DIO, clock div:2
+load:0x3fff0030,len:1184
+load:0x40078000,len:13132
+load:0x40080400,len:3036
+entry 0x400805e4
+[I][logger:355]: Log initialized
+[C][ota:473]: There have been 6 suspected unsuccessful boot attempts.
+[D][esp32.preferences:114]: Saving 1 preferences to flash...
+[D][esp32.preferences:143]: Saving 1 preferences to flash: 0 cached, 1 written, 0 failed
+[I][app:029]: Running through setup()...
+[C][wifi:038]: Setting up WiFi...
+[C][wifi:051]: Starting WiFi...
+[C][wifi:052]:   Local MAC: B0:A7:32:36:29:A4
+[D][wifi:455]: Starting scan...
+[D][wifi:470]: Found networks:
+[I][wifi:514]: - 'SWIT2' (76:AC:B9:AE:CA:70) [redacted]▂▄▆█
+[D][wifi:515]:     Channel: 11
+[D][wifi:516]:     RSSI: -55 dB
+[I][wifi:514]: - 'SWIT2' (1E:E8:29:51:B6:84) [redacted]▂▄▆█
+[D][wifi:515]:     Channel: 6
+[D][wifi:516]:     RSSI: -59 dB
+[I][wifi:514]: - 'SWIT2' (7A:83:C2:19:D1:4A) [redacted]▂▄▆█
+[D][wifi:515]:     Channel: 1
+[D][wifi:516]:     RSSI: -60 dB
+[D][wifi:519]: - 'HP-Print-14-officeprinter'[redacted] (D8:5D:E2:02:4C:14) [redacted]▂▄▆█
+[D][wifi:519]: - ''[redacted] (8A:83:C2:19:D1:4A) [redacted]▂▄▆█
+[D][wifi:519]: - ''[redacted] (76:AC:B9:DE:CA:70) [redacted]▂▄▆█
+[D][wifi:519]: - 'Guest-Network'[redacted] (74:AC:B9:AE:CA:70) [redacted]▂▄▆█
+[D][wifi:519]: - 'UIDMV_IoT'[redacted] (76:AC:B9:CE:CA:70) [redacted]▂▄▆█
+[D][wifi:519]: - 'myiot'[redacted] (76:AC:B9:BE:CA:70) [redacted]▂▄▆█
+[D][wifi:519]: - 'myiot'[redacted] (22:E8:29:51:B6:84) [redacted]▂▄▆█
+[D][wifi:519]: - 'Guest-Network'[redacted] (18:E8:29:51:B6:84) [redacted]▂▄▆█
+[D][wifi:519]: - 'Guest-Network'[redacted] (74:83:C2:19:D1:4A) [redacted]▂▄▆█
+[D][wifi:519]: - 'myiot'[redacted] (7E:83:C2:19:D1:4A) [redacted]▂▄▆█
+[D][wifi:519]: - 'UIDMV_IoT'[redacted] (82:83:C2:19:D1:4A) [redacted]▂▄▆█
+[D][wifi:519]: - ''[redacted] (86:83:C2:19:D1:4A) [redacted]▂▄▆█
+[D][wifi:519]: - ''[redacted] (2A:E8:29:51:B6:84) [redacted]▂▄▆█
+[D][wifi:519]: - 'UIDMV_IoT'[redacted] (26:E8:29:51:B6:84) [redacted]▂▄▆█
+[D][wifi:519]: - ''[redacted] (2E:E8:29:51:B6:84) [redacted]▂▄▆█
+[D][wifi:519]: - 'SpectrumSetup-BB'[redacted] (FC:12:63:F4:88:B9) [redacted]▂▄▆█
+[D][wifi:519]: - 'DadNet'[redacted] (F4:69:42:C7:2F:F1) [redacted]▂▄▆█
+[D][wifi:519]: - 'CenturyLink6661'[redacted] (02:87:56:7B:DB:68) [redacted]▂▄▆█
+[I][wifi:300]: WiFi Connecting to 'SWIT2'...
+[I][wifi:587]: WiFi Connected!
+[C][wifi:405]:   Local MAC: B0:A7:32:36:29:A4
+[C][wifi:410]:   SSID: 'SWIT2'[redacted]
+[C][wifi:411]:   IP Address: 192.168.68.68
+[C][wifi:413]:   BSSID: 76:AC:B9:AE:CA:70[redacted]
+[C][wifi:414]:   Hostname: 'air-quality-1'
+[C][wifi:416]:   Signal strength: -52 dB ▂▄▆█
+[C][wifi:420]:   Channel: 11
+[C][wifi:421]:   Subnet: 255.255.255.0
+[C][wifi:422]:   Gateway: 192.168.68.1
+[C][wifi:423]:   DNS1: 192.168.68.1
+[C][wifi:424]:   DNS2: 8.8.8.8
+[D][wifi:596]: Disabling AP...
+[C][ota:097]: Over-The-Air Updates:
+[C][ota:098]:   Address: air-quality-1.local:3232
+[C][ota:101]:   Using Password.
+[W][ota:107]: Last Boot was an unhandled reset, will proceed to safe mode in 4 restarts
+[C][api:025]: Setting up Home Assistant API server...
+[D][custom:041]: Device connected successfully !
+[D][custom:048]: The sensor is wake up mode
+[D][custom:052]: Please wait until the warm-up time is over!
+[D][custom:052]: Please wait until the warm-up time is over!
+[D][custom:052]: Please wait until the warm-up time is over!
+[D][custom:052]: Please wait until the warm-up time is over!
+[D][custom:052]: Please wait until the warm-up time is over!
+E (26509) task_wdt: Task watchdog got triggered. The following tasks did not reset the watchdog in time:
+E (26509) task_wdt:  - loopTask (CPU 1)
+E (26509) task_wdt: Tasks currently running:
+E (26509) task_wdt: CPU 0: IDLE
+E (26509) task_wdt: CPU 1: IDLE
+E (26509) task_wdt: Aborting.
+
+abort() was called at PC 0x400f6010 on core 0
+
+
+Backtrace:0x40083acd:0x3ffbea4c |<-CORRUPTED
+
+
+
+
+ELF file SHA256: 0000000000000000
+
+Rebooting...
+ets Jul 29 2019 12:21:46
+
+rst:0xc (SW_CPU_RESET),boot:0x13 (SPI_FAST_FLASH_BOOT)
+configsip: 0, SPIWP:0xee
+clk_drv:0x00,q_drv:0x00,d_drv:0x00,cs0_drv:0x00,hd_drv:0x00,wp_drv:0x00
+mode:DIO, clock div:2
+load:0x3fff0030,len:1184
+load:0x40078000,len:13132
+load:0x40080400,len:3036
+entry 0x400805e4
+[I][logger:355]: Log initialized
+[C][ota:473]: There have been 7 suspected unsuccessful boot attempts.
+[D][esp32.preferences:114]: Saving 1 preferences to flash...
+[D][esp32.preferences:143]: Saving 1 preferences to flash: 0 cached, 1 written, 0 failed
+[I][app:029]: Running through setup()...
+[C][wifi:038]: Setting up WiFi...
+[C][wifi:051]: Starting WiFi...
+[C][wifi:052]:   Local MAC: B0:A7:32:36:29:A4
+[D][wifi:455]: Starting scan...
+[D][wifi:470]: Found networks:
+[I][wifi:514]: - 'SWIT2' (76:AC:B9:AE:CA:70) [redacted]▂▄▆█
+[D][wifi:515]:     Channel: 11
+[D][wifi:516]:     RSSI: -53 dB
+[I][wifi:514]: - 'SWIT2' (1E:E8:29:51:B6:84) [redacted]▂▄▆█
+[D][wifi:515]:     Channel: 6
+[D][wifi:516]:     RSSI: -58 dB
+[I][wifi:514]: - 'SWIT2' (7A:83:C2:19:D1:4A) [redacted]▂▄▆█
+[D][wifi:515]:     Channel: 1
+[D][wifi:516]:     RSSI: -59 dB
+[D][wifi:519]: - 'HP-Print-14-officeprinter'[redacted] (D8:5D:E2:02:4C:14) [redacted]▂▄▆█
+[D][wifi:519]: - 'myiot'[redacted] (76:AC:B9:BE:CA:70) [redacted]▂▄▆█
+[D][wifi:519]: - 'Guest-Network'[redacted] (74:AC:B9:AE:CA:70) [redacted]▂▄▆█
+[D][wifi:519]: - ''[redacted] (8A:83:C2:19:D1:4A) [redacted]▂▄▆█
+[D][wifi:519]: - 'UIDMV_IoT'[redacted] (76:AC:B9:CE:CA:70) [redacted]▂▄▆█
+[D][wifi:519]: - ''[redacted] (76:AC:B9:DE:CA:70) [redacted]▂▄▆█
+[D][wifi:519]: - ''[redacted] (2A:E8:29:51:B6:84) [redacted]▂▄▆█
+[D][wifi:519]: - 'myiot'[redacted] (22:E8:29:51:B6:84) [redacted]▂▄▆█
+[D][wifi:519]: - 'myiot'[redacted] (7E:83:C2:19:D1:4A) [redacted]▂▄▆█
+[D][wifi:519]: - 'UIDMV_IoT'[redacted] (82:83:C2:19:D1:4A) [redacted]▂▄▆█
+[D][wifi:519]: - ''[redacted] (86:83:C2:19:D1:4A) [redacted]▂▄▆█
+[D][wifi:519]: - 'Guest-Network'[redacted] (18:E8:29:51:B6:84) [redacted]▂▄▆█
+[D][wifi:519]: - 'UIDMV_IoT'[redacted] (26:E8:29:51:B6:84) [redacted]▂▄▆█
+[D][wifi:519]: - 'Guest-Network'[redacted] (74:83:C2:19:D1:4A) [redacted]▂▄▆█
+[D][wifi:519]: - ''[redacted] (2E:E8:29:51:B6:84) [redacted]▂▄▆█
+[D][wifi:519]: - 'SpectrumSetup-BB'[redacted] (FC:12:63:F4:88:B9) [redacted]▂▄▆█
+[D][wifi:519]: - 'DadNet'[redacted] (F4:69:42:C7:2F:F1) [redacted]▂▄▆█
+[D][wifi:519]: - 'CenturyLink6661'[redacted] (02:87:56:7B:DB:68) [redacted]▂▄▆█
+[D][wifi:519]: - 'CenturyLink6589'[redacted] (02:6A:E3:F4:FB:C5) [redacted]▂▄▆█
+[I][wifi:300]: WiFi Connecting to 'SWIT2'...
+[W][wifi_esp32:458]: Event: Disconnected ssid='SWIT2' bssid=76:AC:B9:AE:CA:70[redacted] reason='Authentication Failed'
+[W][wifi:639]: WiFi Unknown connection status 0
+[I][wifi:300]: WiFi Connecting to 'SWIT2'...
+[W][wifi_esp32:458]: Event: Disconnected ssid='SWIT2' bssid=76:AC:B9:AE:CA:70[redacted] reason='Authentication Failed'
+[W][wifi:634]: Connecting to WiFi network failed. Are the credentials wrong?
+[D][wifi:455]: Starting scan...
+[D][wifi:470]: Found networks:
+[I][wifi:514]: - 'SWIT2' (1E:E8:29:51:B6:84) [redacted]▂▄▆█
+[D][wifi:515]:     Channel: 6
+[D][wifi:516]:     RSSI: -56 dB
+[I][wifi:514]: - 'SWIT2' (7A:83:C2:19:D1:4A) [redacted]▂▄▆█
+[D][wifi:515]:     Channel: 1
+[D][wifi:516]:     RSSI: -59 dB
+[I][wifi:514]: - 'SWIT2' (76:AC:B9:AE:CA:70) [redacted]▂▄▆█
+[D][wifi:515]:     Channel: 11
+[D][wifi:516]:     RSSI: -51 dB
+[D][wifi:519]: - 'HP-Print-14-officeprinter'[redacted] (D8:5D:E2:02:4C:14) [redacted]▂▄▆█
+[D][wifi:519]: - 'UIDMV_IoT'[redacted] (76:AC:B9:CE:CA:70) [redacted]▂▄▆█
+[D][wifi:519]: - 'Guest-Network'[redacted] (74:AC:B9:AE:CA:70) [redacted]▂▄▆█
+[D][wifi:519]: - 'myiot'[redacted] (76:AC:B9:BE:CA:70) [redacted]▂▄▆█
+[D][wifi:519]: - ''[redacted] (76:AC:B9:DE:CA:70) [redacted]▂▄▆█
+[D][wifi:519]: - ''[redacted] (8A:83:C2:19:D1:4A) [redacted]▂▄▆█
+[D][wifi:519]: - 'UIDMV_IoT'[redacted] (26:E8:29:51:B6:84) [redacted]▂▄▆█
+[D][wifi:519]: - 'Guest-Network'[redacted] (18:E8:29:51:B6:84) [redacted]▂▄▆█
+[D][wifi:519]: - 'myiot'[redacted] (22:E8:29:51:B6:84) [redacted]▂▄▆█
+[D][wifi:519]: - ''[redacted] (2A:E8:29:51:B6:84) [redacted]▂▄▆█
+[D][wifi:519]: - 'Guest-Network'[redacted] (74:83:C2:19:D1:4A) [redacted]▂▄▆█
+[D][wifi:519]: - ''[redacted] (86:83:C2:19:D1:4A) [redacted]▂▄▆█
+[D][wifi:519]: - 'myiot'[redacted] (7E:83:C2:19:D1:4A) [redacted]▂▄▆█
+[D][wifi:519]: - 'UIDMV_IoT'[redacted] (82:83:C2:19:D1:4A) [redacted]▂▄▆█
+[D][wifi:519]: - ''[redacted] (2E:E8:29:51:B6:84) [redacted]▂▄▆█
+[D][wifi:519]: - 'DadNet'[redacted] (F4:69:42:C7:2F:F1) [redacted]▂▄▆█
+[D][wifi:519]: - 'SpectrumSetup-BB'[redacted] (FC:12:63:F4:88:B9) [redacted]▂▄▆█
+[D][wifi:519]: - 'CenturyLink6661'[redacted] (02:87:56:7B:DB:68) [redacted]▂▄▆█
+[D][wifi:519]: - 'CenturyLink6589'[redacted] (02:6A:E3:F4:FB:C5) [redacted]▂▄▆█
+[I][wifi:300]: WiFi Connecting to 'SWIT2'...
+[W][wifi:582]: Incomplete connection.
+[W][wifi_esp32:458]: Event: Disconnected ssid='SWIT2' bssid=76:AC:B9:AE:CA:70[redacted] reason='Association Leave'
+[I][wifi:300]: WiFi Connecting to 'SWIT2'...
+[I][wifi:587]: WiFi Connected!
+[C][wifi:405]:   Local MAC: B0:A7:32:36:29:A4
+[C][wifi:410]:   SSID: 'SWIT2'[redacted]
+[C][wifi:411]:   IP Address: 192.168.68.68
+[C][wifi:413]:   BSSID: 1E:E8:29:51:B6:84[redacted]
+[C][wifi:414]:   Hostname: 'air-quality-1'
+[C][wifi:416]:   Signal strength: -58 dB ▂▄▆█
+[C][wifi:420]:   Channel: 6
+[C][wifi:421]:   Subnet: 255.255.255.0
+[C][wifi:422]:   Gateway: 192.168.68.1
+[C][wifi:423]:   DNS1: 192.168.68.1
+[C][wifi:424]:   DNS2: 8.8.8.8
+[D][wifi:596]: Disabling AP...
+[C][ota:097]: Over-The-Air Updates:
+[C][ota:098]:   Address: air-quality-1.local:3232
+[C][ota:101]:   Using Password.
+[W][ota:107]: Last Boot was an unhandled reset, will proceed to safe mode in 3 restarts
+[C][api:025]: Setting up Home Assistant API server...
+[D][custom:041]: Device connected successfully !
+[D][custom:048]: The sensor is wake up mode
+[D][custom:052]: Please wait until the warm-up time is over!
+[D][custom:052]: Please wait until the warm-up time is over!
+[D][custom:052]: Please wait until the warm-up time is over!
+[D][custom:052]: Please wait until the warm-up time is over!
+[D][custom:052]: Please wait until the warm-up time is over!
+E (28204) task_wdt: Task watchdog got triggered. The following tasks did not reset the watchdog in time:
+E (28204) task_wdt:  - loopTask (CPU 1)
+E (28204) task_wdt: Tasks currently running:
+E (28204) task_wdt: CPU 0: IDLE
+E (28204) task_wdt: CPU 1: IDLE
+E (28204) task_wdt: Aborting.
+
+abort() was called at PC 0x400f6010 on core 0
+
+
+Backtrace:0x40083acd:0x3ffbea4c |<-CORRUPTED
+
+
+
+
+ELF file SHA256: 0000000000000000
+
+Rebooting...
+ets Jul 29 2019 12:21:46
+
+rst:0xc (SW_CPU_RESET),boot:0x13 (SPI_FAST_FLASH_BOOT)
+configsip: 0, SPIWP:0xee
+clk_drv:0x00,q_drv:0x00,d_drv:0x00,cs0_drv:0x00,hd_drv:0x00,wp_drv:0x00
+mode:DIO, clock div:2
+load:0x3fff0030,len:1184
+load:0x40078000,len:13132
+load:0x40080400,len:3036
+entry 0x400805e4
+[I][logger:355]: Log initialized
+[C][ota:473]: There have been 8 suspected unsuccessful boot attempts.
+[D][esp32.preferences:114]: Saving 1 preferences to flash...
+[D][esp32.preferences:143]: Saving 1 preferences to flash: 0 cached, 1 written, 0 failed
+[I][app:029]: Running through setup()...
+[C][wifi:038]: Setting up WiFi...
+[C][wifi:051]: Starting WiFi...
+[C][wifi:052]:   Local MAC: B0:A7:32:36:29:A4
+[D][wifi:455]: Starting scan...
+[D][wifi:470]: Found networks:
+[I][wifi:514]: - 'SWIT2' (76:AC:B9:AE:CA:70) [redacted]▂▄▆█
+[D][wifi:515]:     Channel: 11
+[D][wifi:516]:     RSSI: -52 dB
+[I][wifi:514]: - 'SWIT2' (1E:E8:29:51:B6:84) [redacted]▂▄▆█
+[D][wifi:515]:     Channel: 6
+[D][wifi:516]:     RSSI: -59 dB
+[I][wifi:514]: - 'SWIT2' (7A:83:C2:19:D1:4A) [redacted]▂▄▆█
+[D][wifi:515]:     Channel: 1
+[D][wifi:516]:     RSSI: -60 dB
+[D][wifi:519]: - 'HP-Print-14-officeprinter'[redacted] (D8:5D:E2:02:4C:14) [redacted]▂▄▆█
+[D][wifi:519]: - 'Guest-Network'[redacted] (74:AC:B9:AE:CA:70) [redacted]▂▄▆█
+[D][wifi:519]: - 'myiot'[redacted] (76:AC:B9:BE:CA:70) [redacted]▂▄▆█
+[D][wifi:519]: - 'UIDMV_IoT'[redacted] (76:AC:B9:CE:CA:70) [redacted]▂▄▆█
+[D][wifi:519]: - ''[redacted] (76:AC:B9:DE:CA:70) [redacted]▂▄▆█
+[D][wifi:519]: - ''[redacted] (8A:83:C2:19:D1:4A) [redacted]▂▄▆█
+[D][wifi:519]: - 'Guest-Network'[redacted] (18:E8:29:51:B6:84) [redacted]▂▄▆█
+[D][wifi:519]: - ''[redacted] (2A:E8:29:51:B6:84) [redacted]▂▄▆█
+[D][wifi:519]: - 'myiot'[redacted] (22:E8:29:51:B6:84) [redacted]▂▄▆█
+[D][wifi:519]: - 'myiot'[redacted] (7E:83:C2:19:D1:4A) [redacted]▂▄▆█
+[D][wifi:519]: - 'UIDMV_IoT'[redacted] (82:83:C2:19:D1:4A) [redacted]▂▄▆█
+[D][wifi:519]: - ''[redacted] (86:83:C2:19:D1:4A) [redacted]▂▄▆█
+[D][wifi:519]: - 'Guest-Network'[redacted] (74:83:C2:19:D1:4A) [redacted]▂▄▆█
+[D][wifi:519]: - 'UIDMV_IoT'[redacted] (26:E8:29:51:B6:84) [redacted]▂▄▆█
+[D][wifi:519]: - ''[redacted] (2E:E8:29:51:B6:84) [redacted]▂▄▆█
+[D][wifi:519]: - 'SpectrumSetup-BB'[redacted] (FC:12:63:F4:88:B9) [redacted]▂▄▆█
+[D][wifi:519]: - 'DadNet'[redacted] (F4:69:42:C7:2F:F1) [redacted]▂▄▆█
+[D][wifi:519]: - 'CenturyLink6661'[redacted] (02:87:56:7B:DB:68) [redacted]▂▄▆█
+[D][wifi:519]: - 'CenturyLink6589'[redacted] (02:6A:E3:F4:FB:C5) [redacted]▂▄▆█
+[I][wifi:300]: WiFi Connecting to 'SWIT2'...
+ets Jul 29 2019 12:21:46
+
+rst:0x1 (POWERON_RESET),boot:0x13 (SPI_FAST_FLASH_BOOT)
+configsip: 0, SPIWP:0xee
+clk_drv:0x00,q_drv:0x00,d_drv:0x00,cs0_drv:0x00,hd_drv:0x00,wp_drv:0x00
+mode:DIO, clock div:2
+load:0x3fff0030,len:1184
+load:0x40078000,len:13132
+load:0x40080400,len:3036
+entry 0x400805e4
+[I][logger:355]: Log initialized
+[C][ota:473]: There have been 9 suspected unsuccessful boot attempts.
+[D][esp32.preferences:114]: Saving 1 preferences to flash...
+[D][esp32.preferences:143]: Saving 1 preferences to flash: 0 cached, 1 written, 0 failed
+[I][app:029]: Running through setup()...
+[C][wifi:038]: Setting up WiFi...
+[C][wifi:051]: Starting WiFi...
+[C][wifi:052]:   Local MAC: B0:A7:32:36:29:A4
+[D][wifi:455]: Starting scan...
+[D][wifi:470]: Found networks:
+[I][wifi:514]: - 'SWIT2' (76:AC:B9:AE:CA:70) [redacted]▂▄▆█
+[D][wifi:515]:     Channel: 11
+[D][wifi:516]:     RSSI: -53 dB
+[I][wifi:514]: - 'SWIT2' (1E:E8:29:51:B6:84) [redacted]▂▄▆█
+[D][wifi:515]:     Channel: 6
+[D][wifi:516]:     RSSI: -57 dB
+[I][wifi:514]: - 'SWIT2' (7A:83:C2:19:D1:4A) [redacted]▂▄▆█
+[D][wifi:515]:     Channel: 1
+[D][wifi:516]:     RSSI: -60 dB
+[D][wifi:519]: - 'HP-Print-14-officeprinter'[redacted] (D8:5D:E2:02:4C:14) [redacted]▂▄▆█
+[D][wifi:519]: - 'Guest-Network'[redacted] (74:AC:B9:AE:CA:70) [redacted]▂▄▆█
+[D][wifi:519]: - ''[redacted] (8A:83:C2:19:D1:4A) [redacted]▂▄▆█
+[D][wifi:519]: - 'myiot'[redacted] (76:AC:B9:BE:CA:70) [redacted]▂▄▆█
+[D][wifi:519]: - 'UIDMV_IoT'[redacted] (76:AC:B9:CE:CA:70) [redacted]▂▄▆█
+[D][wifi:519]: - ''[redacted] (76:AC:B9:DE:CA:70) [redacted]▂▄▆█
+[D][wifi:519]: - 'Guest-Network'[redacted] (18:E8:29:51:B6:84) [redacted]▂▄▆█
+[D][wifi:519]: - 'myiot'[redacted] (22:E8:29:51:B6:84) [redacted]▂▄▆█
+[D][wifi:519]: - 'myiot'[redacted] (7E:83:C2:19:D1:4A) [redacted]▂▄▆█
+[D][wifi:519]: - 'UIDMV_IoT'[redacted] (82:83:C2:19:D1:4A) [redacted]▂▄▆█
+[D][wifi:519]: - ''[redacted] (86:83:C2:19:D1:4A) [redacted]▂▄▆█
+[D][wifi:519]: - ''[redacted] (2A:E8:29:51:B6:84) [redacted]▂▄▆█
+[D][wifi:519]: - 'UIDMV_IoT'[redacted] (26:E8:29:51:B6:84) [redacted]▂▄▆█
+[D][wifi:519]: - 'Guest-Network'[redacted] (74:83:C2:19:D1:4A) [redacted]▂▄▆█
+[D][wifi:519]: - ''[redacted] (2E:E8:29:51:B6:84) [redacted]▂▄▆█
+[D][wifi:519]: - 'SpectrumSetup-BB'[redacted] (FC:12:63:F4:88:B9) [redacted]▂▄▆█
+[D][wifi:519]: - 'DadNet'[redacted] (F4:69:42:C7:2F:F1) [redacted]▂▄▆█
+[D][wifi:519]: - 'CenturyLink6661'[redacted] (02:87:56:7B:DB:68) [redacted]▂▄▆█
+[D][wifi:519]: - 'CenturyLink6589'[redacted] (02:6A:E3:F4:FB:C5) [redacted]▂▄▆█
+[I][wifi:300]: WiFi Connecting to 'SWIT2'...
+[I][wifi:587]: WiFi Connected!
+[C][wifi:405]:   Local MAC: B0:A7:32:36:29:A4
+[C][wifi:410]:   SSID: 'SWIT2'[redacted]
+[C][wifi:411]:   IP Address: 192.168.68.68
+[C][wifi:413]:   BSSID: 76:AC:B9:AE:CA:70[redacted]
+[C][wifi:414]:   Hostname: 'air-quality-1'
+[C][wifi:416]:   Signal strength: -52 dB ▂▄▆█
+[C][wifi:420]:   Channel: 11
+[C][wifi:421]:   Subnet: 255.255.255.0
+[C][wifi:422]:   Gateway: 192.168.68.1
+[C][wifi:423]:   DNS1: 192.168.68.1
+[C][wifi:424]:   DNS2: 8.8.8.8
+[D][wifi:596]: Disabling AP...
+[C][ota:097]: Over-The-Air Updates:
+[C][ota:098]:   Address: air-quality-1.local:3232
+[C][ota:101]:   Using Password.
+[W][ota:107]: Last Boot was an unhandled reset, will proceed to safe mode in 1 restarts
+[C][api:025]: Setting up Home Assistant API server...
+[D][custom:041]: Device connected successfully !
+[D][custom:048]: The sensor is wake up mode
+[D][custom:052]: Please wait until the warm-up time is over!
+[D][custom:052]: Please wait until the warm-up time is over!
+[D][custom:052]: Please wait until the warm-up time is over!
+[D][custom:052]: Please wait until the warm-up time is over!
+[D][custom:052]: Please wait until the warm-up time is over!
+E (26915) task_wdt: Task watchdog got triggered. The following tasks did not reset the watchdog in time:
+E (26915) task_wdt:  - loopTask (CPU 1)
+E (26915) task_wdt: Tasks currently running:
+E (26915) task_wdt: CPU 0: IDLE
+E (26915) task_wdt: CPU 1: IDLE
+E (26915) task_wdt: Aborting.
+
+abort() was called at PC 0x400f6010 on core 0
+
+
+Backtrace:0x40083acd:0x3ffbea4c |<-CORRUPTED
+
+
+
+
+ELF file SHA256: 0000000000000000
+
+Rebooting...
+ets Jul 29 2019 12:21:46
+
+rst:0xc (SW_CPU_RESET),boot:0x13 (SPI_FAST_FLASH_BOOT)
+configsip: 0, SPIWP:0xee
+clk_drv:0x00,q_drv:0x00,d_drv:0x00,cs0_drv:0x00,hd_drv:0x00,wp_drv:0x00
+mode:DIO, clock div:2
+load:0x3fff0030,len:1184
+load:0x40078000,len:13132
+load:0x40080400,len:3036
+entry 0x400805e4
+[I][logger:355]: Log initialized
+[C][ota:473]: There have been 10 suspected unsuccessful boot attempts.
+[D][esp32.preferences:114]: Saving 1 preferences to flash...
+[D][esp32.preferences:143]: Saving 1 preferences to flash: 0 cached, 1 written, 0 failed
+[E][ota:480]: Boot loop detected. Proceeding to safe mode.
+[I][app:029]: Running through setup()...
+[C][wifi:038]: Setting up WiFi...
+[C][wifi:051]: Starting WiFi...
+[C][wifi:052]:   Local MAC: B0:A7:32:36:29:A4
+[D][wifi:455]: Starting scan...
+[D][wifi:470]: Found networks:
+[I][wifi:514]: - 'SWIT2' (76:AC:B9:AE:CA:70) [redacted]▂▄▆█
+[D][wifi:515]:     Channel: 11
+[D][wifi:516]:     RSSI: -52 dB
+[I][wifi:514]: - 'SWIT2' (7A:83:C2:19:D1:4A) [redacted]▂▄▆█
+[D][wifi:515]:     Channel: 1
+[D][wifi:516]:     RSSI: -60 dB
+[I][wifi:514]: - 'SWIT2' (1E:E8:29:51:B6:84) [redacted]▂▄▆█
+[D][wifi:515]:     Channel: 6
+[D][wifi:516]:     RSSI: -62 dB
+[D][wifi:519]: - 'HP-Print-14-officeprinter'[redacted] (D8:5D:E2:02:4C:14) [redacted]▂▄▆█
+[D][wifi:519]: - 'UIDMV_IoT'[redacted] (76:AC:B9:CE:CA:70) [redacted]▂▄▆█
+[D][wifi:519]: - ''[redacted] (76:AC:B9:DE:CA:70) [redacted]▂▄▆█
+[D][wifi:519]: - ''[redacted] (8A:83:C2:19:D1:4A) [redacted]▂▄▆█
+[D][wifi:519]: - 'Guest-Network'[redacted] (74:AC:B9:AE:CA:70) [redacted]▂▄▆█
+[D][wifi:519]: - 'myiot'[redacted] (76:AC:B9:BE:CA:70) [redacted]▂▄▆█
+[D][wifi:519]: - 'Guest-Network'[redacted] (74:83:C2:19:D1:4A) [redacted]▂▄▆█
+[D][wifi:519]: - 'myiot'[redacted] (7E:83:C2:19:D1:4A) [redacted]▂▄▆█
+[D][wifi:519]: - 'UIDMV_IoT'[redacted] (82:83:C2:19:D1:4A) [redacted]▂▄▆█
+[D][wifi:519]: - ''[redacted] (86:83:C2:19:D1:4A) [redacted]▂▄▆█
+[D][wifi:519]: - ''[redacted] (2E:E8:29:51:B6:84) [redacted]▂▄▆█
+[D][wifi:519]: - ''[redacted] (2A:E8:29:51:B6:84) [redacted]▂▄▆█
+[D][wifi:519]: - 'myiot'[redacted] (22:E8:29:51:B6:84) [redacted]▂▄▆█
+[D][wifi:519]: - 'UIDMV_IoT'[redacted] (26:E8:29:51:B6:84) [redacted]▂▄▆█
+[D][wifi:519]: - 'Guest-Network'[redacted] (18:E8:29:51:B6:84) [redacted]▂▄▆█
+[D][wifi:519]: - 'SpectrumSetup-BB'[redacted] (FC:12:63:F4:88:B9) [redacted]▂▄▆█
+[D][wifi:519]: - 'DadNet'[redacted] (F4:69:42:C7:2F:F1) [redacted]▂▄▆█
+[D][wifi:519]: - 'CenturyLink6661'[redacted] (02:87:56:7B:DB:68) [redacted]▂▄▆█
+[D][wifi:519]: - 'CenturyLink6589'[redacted] (02:6A:E3:F4:FB:C5) [redacted]▂▄▆█
+[I][wifi:300]: WiFi Connecting to 'SWIT2'...
+[W][wifi_esp32:458]: Event: Disconnected ssid='SWIT2' bssid=76:AC:B9:AE:CA:70[redacted] reason='Authentication Failed'
+[W][wifi:639]: WiFi Unknown connection status 0
+[I][wifi:300]: WiFi Connecting to 'SWIT2'...
+[W][wifi_esp32:458]: Event: Disconnected ssid='SWIT2' bssid=76:AC:B9:AE:CA:70[redacted] reason='Authentication Failed'
+[W][wifi:634]: Connecting to WiFi network failed. Are the credentials wrong?

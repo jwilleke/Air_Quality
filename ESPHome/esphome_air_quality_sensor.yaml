@@ -5,7 +5,8 @@ esphome:
   
   
   includes:
-    - air_quality_sensor.h
+  # This is the file from main.h
+    - aq1.h
     
   libraries:
     - Wire
