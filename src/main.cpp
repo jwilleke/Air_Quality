@@ -9,6 +9,18 @@
 
 AsyncWebServer server(80);
 
+//#define DEBUG_PRINT_ENABLED // Comment out this line of code if you don't want to see the debug print
+
+#if defined(DEBUG_PRINT_ENABLED)
+  #define DEBUG_INIT() Serial.begin(115200);
+  #define DEBUG_PRINT(x) Serial.print(x);
+  #define DEBUG_PRINTLN(x) Serial.println(x);
+#else
+  #define DEBUG_INIT()
+  #define DEBUG_PRINTLN(x)
+  #define DEBUG_PRINT(x)
+#endif
+
 #define CALIBRATION_TIME 3 // needed for MICS
 #define I2C_COMMUNICATION  // I2C communication. Comment out this line of code if you want to use SPI communication.
 #define PM_I2C_ADDRESS 0x19
@@ -56,17 +68,17 @@ void get_network_info()
 {
   if (WiFi.status() == WL_CONNECTED)
   {
-    Serial.print("[*] Network information for ");
-    Serial.println(ssid);
+    DEBUG_PRINT("[*] Network information for ");
+    DEBUG_PRINTLN(ssid);
 
-    Serial.println("[+] BSSID : " + WiFi.BSSIDstr());
-    Serial.print("[+] Gateway IP : ");
-    Serial.println(WiFi.gatewayIP());
-    Serial.print("[+] Subnet Mask : ");
-    Serial.println(WiFi.subnetMask());
-    Serial.println((String) "[+] RSSI : " + WiFi.RSSI() + " dB");
-    Serial.print("[+] ESP32 IP : ");
-    Serial.println(WiFi.localIP());
+    DEBUG_PRINTLN("[+] BSSID : " + WiFi.BSSIDstr());
+    DEBUG_PRINT("[+] Gateway IP : ");
+    DEBUG_PRINTLN(WiFi.gatewayIP());
+    DEBUG_PRINT("[+] Subnet Mask : ");
+    DEBUG_PRINTLN(WiFi.subnetMask());
+    DEBUG_PRINTLN((String) "[+] RSSI : " + WiFi.RSSI() + " dB");
+    DEBUG_PRINT("[+] ESP32 IP : ");
+    DEBUG_PRINTLN(WiFi.localIP());
   }
 }
 
@@ -88,22 +100,22 @@ const char *getMICSNameFromHexValue(byte hexValue)
 void dumpMICSData(uint8_t hexValue)
 {
   float gasdata = float(MICS.getGasData(hexValue));
-  Serial.print(getMICSNameFromHexValue(hexValue));
-  Serial.print(": ");
+  DEBUG_PRINT(getMICSNameFromHexValue(hexValue));
+  DEBUG_PRINT(": ");
   if (gasdata != -1)
   { // got gasdata
-    Serial.print(float(MICS.getGasData(hexValue)));
-    Serial.print(" PPM");
+    DEBUG_PRINT(float(MICS.getGasData(hexValue)));
+    DEBUG_PRINT(" PPM");
   }
   int8_t gasFlag = MICS.getGasExist(hexValue);
-  Serial.print(" Present?");
+  DEBUG_PRINT(" Present?");
   if (gasFlag == EXIST)
   { // print it
-    Serial.println(" YES! ");
+    DEBUG_PRINTLN(" YES! ");
   }
   else
   {
-    Serial.println(" NO ");
+    DEBUG_PRINTLN(" NO ");
   }
 }
 
@@ -111,7 +123,7 @@ void setup()
 {
   while (!failure)
   {
-    Serial.begin(115200);
+    DEBUG_INIT()
     while (!Serial)
       ; // Wait for serial to be ready
     WiFi.mode(WIFI_STA);
@@ -124,7 +136,7 @@ void setup()
       if (errorCondition > 0)
       {
         failure = true;
-        Serial.println("WiFi Failure occurred! (42)");
+        DEBUG_PRINTLN("WiFi Failure occurred! (42)");
         break;
       }
     }
@@ -136,23 +148,23 @@ void setup()
     // Sensor initialization is used to initialize IIC, which is determined by the communication mode used at this time.
     while (!particle.begin())
     {
-      Serial.println("NO PM2.5 air quality sensor Found !");
+      DEBUG_PRINTLN("NO PM2.5 air quality sensor Found !");
       delay(1000);
     }
-    Serial.println("PM2.5 air quality sensor Found!");
+    DEBUG_PRINTLN("PM2.5 air quality sensor Found!");
     delay(1000);
     /**
       Get sensor version number
     */
     uint8_t version = particle.gainVersion();
-    Serial.print("MICS version is : ");
-    Serial.println(version);
+    DEBUG_PRINT("MICS version is : ");
+    DEBUG_PRINTLN(version);
     while (!MICS.begin())
     {
-      Serial.println("Communication with MICS device failed, please check connection");
+      DEBUG_PRINTLN("Communication with MICS device failed, please check connection");
       delay(1000);
     }
-    Serial.println("Communication with MICS device connected successful!");
+    DEBUG_PRINTLN("Communication with MICS device connected successful!");
     /**!
       Gets the power mode of the sensor
       The sensor is in sleep mode when power is on,so it needs to wake up the sensor.
@@ -163,11 +175,11 @@ void setup()
     if (mode == SLEEP_MODE)
     {
       MICS.wakeUpMode();
-      Serial.println("wake up sensor success!");
+      DEBUG_PRINTLN("wake up sensor success!");
     }
     else
     {
-      Serial.println("The sensor is wake up mode");
+      DEBUG_PRINTLN("The sensor is wake up mode");
     }
     /**
        Do not touch the sensor probe when preheating the sensor.
@@ -189,19 +201,19 @@ void setup()
 
       unsigned long remainingTime = calibrationTime - elapsedTime;
 
-      Serial.print("Waiting for MICS sensor warm-up... ");
+      DEBUG_PRINT("Waiting for MICS sensor warm-up... ");
       if (remainingTime >= 60000)
-      {                                      // Check if more than a minute remains
-        Serial.print(remainingTime / 60000); // Print remaining time in minutes
-        Serial.print(" minutes ");
+      {                                     // Check if more than a minute remains
+        DEBUG_PRINT(remainingTime / 60000); // Print remaining time in minutes
+        DEBUG_PRINT(" minutes ");
         remainingTime %= 60000; // Get remaining seconds
       }
-      Serial.print(remainingTime / 1000); // Print remaining seconds
-      Serial.println(" seconds remaining.");
+      DEBUG_PRINT(remainingTime / 1000); // Print remaining seconds
+      DEBUG_PRINTLN(" seconds remaining.");
 
       delay(3000);
     }
-    Serial.println("Waiting until the MICS Sensor is Ready!");
+    DEBUG_PRINTLN("Waiting until the MICS Sensor is Ready!");
     break; // Exits the outer loop as well
   }        // end of while
 } // end of setup
@@ -227,17 +239,17 @@ void loop()
   uint16_t PM1_0 = particle.gainParticleConcentration_ugm3(PARTICLE_PM1_0_ATMOSPHERE);
   uint16_t PM10 = particle.gainParticleConcentration_ugm3(PARTICLE_PM10_ATMOSPHERE);
   uint16_t pnum = particle.gainParticleNum_Every0_1L(PARTICLENUM_0_3_UM_EVERY0_1L_AIR);
-  Serial.print("The number of particles with a diameter of 0.3um per 0.1 in lift-off is: ");
-  Serial.println(pnum);
-  Serial.print("PM2.5 concentration:");
-  Serial.print(PM2_5);
-  Serial.println(" ug/m3");
-  Serial.print("PM1.0 concentration:");
-  Serial.print(PM1_0);
-  Serial.println(" ug/m3");
-  Serial.print("PM10 concentration:");
-  Serial.print(PM10);
-  Serial.println(" ug/m3");
-  Serial.println(DBAR);
+  DEBUG_PRINT("The number of particles with a diameter of 0.3um per 0.1 in lift-off is: ");
+  DEBUG_PRINTLN(pnum);
+  DEBUG_PRINT("PM2.5 concentration:");
+  DEBUG_PRINT(PM2_5);
+  DEBUG_PRINTLN(" ug/m3");
+  DEBUG_PRINT("PM1.0 concentration:");
+  DEBUG_PRINT(PM1_0);
+  DEBUG_PRINTLN(" ug/m3");
+  DEBUG_PRINT("PM10 concentration:");
+  DEBUG_PRINT(PM10);
+  DEBUG_PRINTLN(" ug/m3");
+  DEBUG_PRINTLN(DBAR);
   delay(3000);
 }

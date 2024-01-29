@@ -1,102 +1,258 @@
 /**
  * This is main.cpp
  */
-
 #include <Arduino.h>
-// #include "esphome.h" // Only when in ESPHome
+#include <config.h>
+#include <arduino_secrets.h>
 #include "DFRobot_MICS.h"
 #include "DFRobot_AirQualitySensor.h"
+#include <WiFi.h>
+#include <AsyncTCP.h>
+#include <ESPAsyncWebServer.h>
 
-#define CALIBRATION_TIME 3
+AsyncWebServer server(80);
 
-class AirQualityCustomSensor : public PollingComponent, public Sensor
+//#define DEBUG_PRINT_ENABLED // Comment out this line of code if you don't want to see the debug print
+
+#if defined(DEBUG_PRINT_ENABLED)
+  #define DEBUG_INIT() Serial.begin(115200);
+  #define DEBUG_PRINT(x) Serial.print(x);
+  #define DEBUG_PRINTLN(x) Serial.println(x);
+#else
+  #define DEBUG_INIT()
+  #define DEBUG_PRINTLN(x)
+  #define DEBUG_PRINT(x)
+#endif
+
+#define CALIBRATION_TIME 3 // needed for MICS
+#define I2C_COMMUNICATION  // I2C communication. Comment out this line of code if you want to use SPI communication.
+#define PM_I2C_ADDRESS 0x19
+
+/**
+ * select i2c device address
+ * MICS_ADDRESS_0               0x75
+ * MICS_ADDRESS_1               0x76
+ * MICS_ADDRESS_2               0x77
+ * MICS_ADDRESS_3               0x78
+ */
+#define MICS_I2C_ADDRESS MICS_ADDRESS_0
+#define CALIBRATION_TIME 3 // Default calibration time is three minutes
+#define I2C_COMMUNICATION  // I2C communication. Comment out this line of code if you want to use SPI communication.
+
+DFRobot_AirQualitySensor particle(&Wire, PM_I2C_ADDRESS);
+DFRobot_MICS_I2C MICS(&Wire, MICS_I2C_ADDRESS);
+
+// To get us out of trouble
+bool failure = false;
+int errorCondition = 0;
+
+// Derver stuff
+void notFound(AsyncWebServerRequest *request)
 {
-public:
-  // constructor
-  DFRobot_MICS_I2C mics;
-  DFRobot_AirQualitySensor particle;
+  request->send(404, "text/plain", "Not found");
+}
+const char *PARAM_MESSAGE = "message";
 
-  // from DFRobot_MICS_I2C
-  Sensor *Carbon_Monoxide_sensor = new Sensor();  // CO
-  Sensor *Methane_sensor = new Sensor();          // CH4
-  Sensor *Ethanol_sensor = new Sensor();          // C2H5OH
-  Sensor *Hydrogen_sensor = new Sensor();         // H2
-  Sensor *Ammonia_sensor = new Sensor();          // NH3
-  Sensor *Nitrogen_Dioxide_sensor = new Sensor(); // NO2
-  // from DFRobot_AirQualitySensor
-  Sensor *Particler_sensor = new Sensor(); // PARTICLENUM_0_3_UM_EVERY0_1L_AIR
-  Sensor *Pm1_0_sensor = new Sensor();     // PM 1.0
-  Sensor *Pm2_5_sensor = new Sensor();     // PM 2.5
-  Sensor *Pm10_sensor = new Sensor();      // PM 10
+char ssid[] = SECRET_SSID; // your network SSID (name)
+char pass[] = SECRET_PASS; // your network password (use for WPA, or use as key for WEP)
 
-  AirQualityCustomSensor() : PollingComponent(15000) {}
+/**
+ * A mrhod to not have to find and look up these things
+ */
+struct MICS_Addresses
+{
+  const char *name;
+  byte hexValue;
+};
 
-  float get_setup_priority() const override { return esphome::setup_priority::AFTER_WIFI; }
+MICS_Addresses mics_Address[] = {{"Carbon Monoxide", 0x01}, {"Methane", 0x02}, {"Ethanol", 0x03}, {"Propane", 0x04}, {"Iso Butane", 0x05}, {"Hydrogen", 0x06}, {"Hydrothion", 0x07}, {"Ammonia", 0x08}, {"Nitric Oxide", 0x09}, {"Nitrogen Dioxide", 0x10}};
 
-  void setup() override
+void get_network_info()
+{
+  if (WiFi.status() == WL_CONNECTED)
   {
-    ESP_LOGD("custom", "Seting up Deivces");
-    // This will be called by App.setup()
-    while (!mics.begin())
+    DEBUG_PRINT("[*] Network information for ");
+    DEBUG_PRINTLN(ssid);
+
+    DEBUG_PRINTLN("[+] BSSID : " + WiFi.BSSIDstr());
+    DEBUG_PRINT("[+] Gateway IP : ");
+    DEBUG_PRINTLN(WiFi.gatewayIP());
+    DEBUG_PRINT("[+] Subnet Mask : ");
+    DEBUG_PRINTLN(WiFi.subnetMask());
+    DEBUG_PRINTLN((String) "[+] RSSI : " + WiFi.RSSI() + " dB");
+    DEBUG_PRINT("[+] ESP32 IP : ");
+    DEBUG_PRINTLN(WiFi.localIP());
+  }
+}
+
+/**
+ * Get the name of the gas from the hexValue
+ */
+const char *getMICSNameFromHexValue(byte hexValue)
+{
+  for (MICS_Addresses address : mics_Address)
+  {
+    if (address.hexValue == hexValue)
     {
-      ESP_LOGD("custom", "NO mics Deivces !");
-      delay(1000);
+      return address.name; // Return the name if a match is found
+    }
+  }
+  return "Unknown"; // Return "Unknown" if no match found
+}
+
+void dumpMICSData(uint8_t hexValue)
+{
+  float gasdata = float(MICS.getGasData(hexValue));
+  DEBUG_PRINT(getMICSNameFromHexValue(hexValue));
+  DEBUG_PRINT(": ");
+  if (gasdata != -1)
+  { // got gasdata
+    DEBUG_PRINT(float(MICS.getGasData(hexValue)));
+    DEBUG_PRINT(" PPM");
+  }
+  int8_t gasFlag = MICS.getGasExist(hexValue);
+  DEBUG_PRINT(" Present?");
+  if (gasFlag == EXIST)
+  { // print it
+    DEBUG_PRINTLN(" YES! ");
+  }
+  else
+  {
+    DEBUG_PRINTLN(" NO ");
+  }
+}
+
+void setup()
+{
+  while (!failure)
+  {
+    DEBUG_INIT()
+    while (!Serial)
+      ; // Wait for serial to be ready
+    WiFi.mode(WIFI_STA);
+    WiFi.begin(ssid, pass);
+    // did we xonnext?
+    if (WiFi.waitForConnectResult() != WL_CONNECTED)
+    {
+      Serial.printf("WiFi Failed!\n");
+      // errorCondition = 42;
+      if (errorCondition > 0)
+      {
+        failure = true;
+        DEBUG_PRINTLN("WiFi Failure occurred! (42)");
+        break;
+      }
     }
 
+    get_network_info();
+
+    // get_network_info();
+
+    // Sensor initialization is used to initialize IIC, which is determined by the communication mode used at this time.
     while (!particle.begin())
     {
-      ESP_LOGD("custom", "NO particle Deivces !");
+      DEBUG_PRINTLN("NO PM2.5 air quality sensor Found !");
       delay(1000);
     }
+    DEBUG_PRINTLN("PM2.5 air quality sensor Found!");
+    delay(1000);
+    /**
+      Get sensor version number
+    */
+    uint8_t version = particle.gainVersion();
+    DEBUG_PRINT("MICS version is : ");
+    DEBUG_PRINTLN(version);
+    while (!MICS.begin())
+    {
+      DEBUG_PRINTLN("Communication with MICS device failed, please check connection");
+      delay(1000);
+    }
+    DEBUG_PRINTLN("Communication with MICS device connected successful!");
+    /**!
+      Gets the power mode of the sensor
+      The sensor is in sleep mode when power is on,so it needs to wake up the sensor.
+      The data obtained in sleep mode is wrong
+     */
+    uint8_t mode = MICS.getPowerState();
 
-    ESP_LOGD("custom", "Devices connected successfully !");
-
-    uint8_t mode = mics.getPowerState();
     if (mode == SLEEP_MODE)
     {
-      mics.wakeUpMode();
-      ESP_LOGD("custom", "wake up sensor success!");
+      MICS.wakeUpMode();
+      DEBUG_PRINTLN("wake up sensor success!");
     }
     else
     {
-      ESP_LOGD("custom", "The sensor is wake up mode");
+      DEBUG_PRINTLN("The sensor is wake up mode");
     }
+    /**
+       Do not touch the sensor probe when preheating the sensor.
+       Place the sensor in clean air.
+       The default calibration time is 3 minutes.
+    */
+    unsigned long startTime = millis();
+    unsigned long calibrationTime = CALIBRATION_TIME * 60 * 1000; // Convert minutes to milliseconds
 
-    while (!mics.warmUpTime(CALIBRATION_TIME))
+    while (!MICS.warmUpTime(CALIBRATION_TIME))
     {
-      ESP_LOGD("custom", "Please wait until the warm-up time is over!");
+      unsigned long elapsedTime = millis() - startTime;
+
+      // Prevent overflow by adjusting elapsedTime if needed:
+      if (elapsedTime > calibrationTime)
+      {
+        elapsedTime = calibrationTime;
+      }
+
+      unsigned long remainingTime = calibrationTime - elapsedTime;
+
+      DEBUG_PRINT("Waiting for MICS sensor warm-up... ");
+      if (remainingTime >= 60000)
+      {                                     // Check if more than a minute remains
+        DEBUG_PRINT(remainingTime / 60000); // Print remaining time in minutes
+        DEBUG_PRINT(" minutes ");
+        remainingTime %= 60000; // Get remaining seconds
+      }
+      DEBUG_PRINT(remainingTime / 1000); // Print remaining seconds
+      DEBUG_PRINTLN(" seconds remaining.");
+
       delay(3000);
     }
-  }
-  void update() override
+    DEBUG_PRINTLN("Waiting until the MICS Sensor is Ready!");
+    break; // Exits the outer loop as well
+  }        // end of while
+} // end of setup
+
+void loop()
+{
+  for (int i = 0; i < sizeof(mics_Address) / sizeof(mics_Address[0]); i++)
   {
-    // This will be called every "update_interval" milliseconds.
-    float gasdata = mics.getGasData(CO);
-
-    Carbon_Monoxide_sensor->publish_state(gasdata);
-
-    gasdata = mics.getGasData(CH4);
-    Methane_sensor->publish_state(gasdata);
-
-    gasdata = mics.getGasData(C2H5OH);
-    Ethanol_sensor->publish_state(gasdata);
-
-    gasdata = mics.getGasData(H2);
-    Hydrogen_sensor->publish_state(gasdata);
-
-    gasdata = mics.getGasData(NH3);
-    Ammonia_sensor->publish_state(gasdata);
-
-    gasdata = mics.getGasData(NO2);
-    Nitrogen_Dioxide_sensor->publish_state(gasdata);
-
-    uint16_t particler_3 = particle.gainParticleNum_Every0_1L(PARTICLENUM_0_3_UM_EVERY0_1L_AIR);
-    uint16_t concentration_pm1_0 = particle.gainParticleConcentration_ugm3(PARTICLE_PM1_0_STANDARD);
-    uint16_t concentration_pm2_5 = particle.gainParticleConcentration_ugm3(PARTICLE_PM2_5_STANDARD);
-    uint16_t concentration_pm10 = particle.gainParticleConcentration_ugm3(PARTICLE_PM10_STANDARD);
-    Particler_sensor->publish_state(particler_3);
-    Pm1_0_sensor->publish_state(concentration_pm1_0);
-    Pm2_5_sensor->publish_state(concentration_pm2_5);
-    Pm10_sensor->publish_state(concentration_pm10);
+    byte hexValue = mics_Address[i].hexValue;
+    // Dunp MICS Sensor Data
+    dumpMICSData(hexValue);
   }
-};
+  /**
+   *@brief : Get concentration of PM1.0
+   *@param :PARTICLE_PM1_0_STANDARD  Standard particle
+            PARTICLE_PM2_5_STANDARD  Standard particle
+            PARTICLE_PM10_STANDARD   Standard particle
+            PARTICLE_PM1_0_ATMOSPHERE  In atmospheric environment
+            PARTICLE_PM2_5_ATMOSPHERE  In atmospheric environment
+            PARTICLE_PM10_ATMOSPHERE   In atmospheric environment
+  */
+  uint16_t PM2_5 = particle.gainParticleConcentration_ugm3(PARTICLE_PM2_5_ATMOSPHERE);
+  uint16_t PM1_0 = particle.gainParticleConcentration_ugm3(PARTICLE_PM1_0_ATMOSPHERE);
+  uint16_t PM10 = particle.gainParticleConcentration_ugm3(PARTICLE_PM10_ATMOSPHERE);
+  uint16_t pnum = particle.gainParticleNum_Every0_1L(PARTICLENUM_0_3_UM_EVERY0_1L_AIR);
+  DEBUG_PRINT("The number of particles with a diameter of 0.3um per 0.1 in lift-off is: ");
+  DEBUG_PRINTLN(pnum);
+  DEBUG_PRINT("PM2.5 concentration:");
+  DEBUG_PRINT(PM2_5);
+  DEBUG_PRINTLN(" ug/m3");
+  DEBUG_PRINT("PM1.0 concentration:");
+  DEBUG_PRINT(PM1_0);
+  DEBUG_PRINTLN(" ug/m3");
+  DEBUG_PRINT("PM10 concentration:");
+  DEBUG_PRINT(PM10);
+  DEBUG_PRINTLN(" ug/m3");
+  DEBUG_PRINTLN(DBAR);
+  delay(3000);
+}
