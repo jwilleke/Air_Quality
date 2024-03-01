@@ -44,25 +44,20 @@ int getPercentage(int value)
  * @brief Print the MAC address of the given byte array
  * 
 */
-void printCurrentNet(byte SSID[], byte BSSID[], byte myId[], long rssi, long encryption)
+void printCurrentNet(WiFiClass WiFi, byte myId[])
 {
-  // print the SSID of the network you're attached to:
-  DEBUG_PRINT("SSID: ");
-  printByetArray(SSID, sizeof(SSID));
-  
-  // print the MAC address of SSID you're attached to:
-  DEBUG_PRINT("BSSID: ");
-  printByetArray(BSSID, sizeof(BSSID));
+  if (WiFi.status() == WL_CONNECTED)
+  {
+    DEBUG_PRINT("[*] Network information for ");
+    DEBUG_PRINTLN(WiFi.SSID());
 
-  DEBUG_PRINT("MAC: ");
-  printByetArray(myId, sizeof(myId));
-
-  // print the received signal strength:
-  DEBUG_PRINT("signal strength (RSSI): ");
-  DEBUG_PRINTLN(rssi);
-
-  // print the encryption type:
-  DEBUG_PRINT("Encryption Type: ");
-  DEBUG_PRINTLN(encryption);
-  DEBUG_PRINTLN();
-} // end printCurrentNet
+    DEBUG_PRINTLN("[+] BSSID : " + WiFi.BSSIDstr());
+    DEBUG_PRINT("[+] Gateway IP : ");
+    DEBUG_PRINTLN(WiFi.gatewayIP());
+    DEBUG_PRINT("[+] Subnet Mask : ");
+    DEBUG_PRINTLN(WiFi.subnetMask());
+    DEBUG_PRINTLN((String) "[+] RSSI : " + WiFi.RSSI() + " dB");
+    DEBUG_PRINT("[+] ESP32 IP : ");
+    DEBUG_PRINTLN(WiFi.localIP());
+  }
+}
