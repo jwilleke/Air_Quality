@@ -53,12 +53,13 @@ HASensorNumber methane("methane", HASensorNumber::PrecisionP3);
 HASensorNumber ethanol("ethanol", HASensorNumber::PrecisionP3);
 HASensorNumber hydrogen("hydrogen", HASensorNumber::PrecisionP3);
 HASensorNumber ammonia("ammonia", HASensorNumber::PrecisionP3);
+HASensorNumber propane("propane", HASensorNumber::PrecisionP3);
+HASensorNumber butane("butane", HASensorNumber::PrecisionP3);
+HASensorNumber no("no", HASensorNumber::PrecisionP3);
 HASensorNumber no2("no2", HASensorNumber::PrecisionP3);
 HASensorNumber pm_1_0("pm_1_0", HASensorNumber::PrecisionP3);
 HASensorNumber pm_2_5("pm_2_5", HASensorNumber::PrecisionP3);
 HASensorNumber pm_10("pm_10", HASensorNumber::PrecisionP3);
-HASensorNumber aTemp("Ambient_Temperature", HASensorNumber::PrecisionP1);
-HASensorNumber lux("Lux", HASensorNumber::PrecisionP1);
 // ==================== END SENSOR DEFINITiON ====================
 
 // To get us out of trouble
@@ -183,6 +184,19 @@ void setup()
   no2.setName("Nitrogen Dioxide");
   no2.setUnitOfMeasurement("ppm");
   //
+  no.setIcon("mdi:gas-cylinder");
+  no.setName("Nitric Oxide");
+  no.setUnitOfMeasurement("ppm");
+  //
+  propane.setIcon("mdi:gas-cylinder");
+  propane.setName("Propane");
+  propane.setUnitOfMeasurement("ppm");
+  //
+  butane.setIcon("mdi:gas-cylinder");
+  butane.setName("Butane");
+  butane.setUnitOfMeasurement("ppm");
+  //
+
   pm_1_0.setIcon("mdi:air-filter");
   pm_1_0.setName("PM1.0");
   pm_1_0.setUnitOfMeasurement("ug/m3");
@@ -278,6 +292,19 @@ void loop()
       ammonia.setValue(MICS.getGasData(0x08));
       DEBUG_PRINT("Ammonia: ");
       DEBUG_PRINTLN(MICS.getGasData(0x08));
+      // read from the propane sensor
+      propane.setValue(MICS.getGasExist(0x04));
+      DEBUG_PRINT("Propane: ");
+      DEBUG_PRINTLN(MICS.getGasExist(0x04));
+      // read from the butane sensor
+      butane.setValue(MICS.getGasExist(0x05));
+      DEBUG_PRINT("Butane: ");
+      DEBUG_PRINTLN(MICS.getGasExist(0x05));
+      // read from the no sensor
+      no.setValue(MICS.getGasExist(0x09));
+      DEBUG_PRINT("Nitric Oxide: ");
+      DEBUG_PRINTLN(MICS.getGasExist(0x09));
+  
       // read from the no2 sensor
       no2.setValue(MICS.getGasData(0x10));
       DEBUG_PRINT("Nitrogen Dioxide: ");
