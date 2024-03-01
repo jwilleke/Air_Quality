@@ -47,6 +47,18 @@ Sensor pin settings
 #define ECRES2 820.0
 #define ECREF 200.0
 
+/**
+ * select i2c device address
+ * MICS_ADDRESS_0               0x75
+ * MICS_ADDRESS_1               0x76
+ * MICS_ADDRESS_2               0x77
+ * MICS_ADDRESS_3               0x78
+ */
+#define MICS_I2C_ADDRESS MICS_ADDRESS_0
+#define CALIBRATION_TIME 3 // Default calibration time is three minutes
+#define I2C_COMMUNICATION  // I2C communication. Comment out this line of code if you want to use SPI communication.
+
+
 const int AIR_VALUE = 3000;  // you need to replace this value with 2500
 const int WATER_VALUE = 761; // you need to replace this value with 770 (0.93863 v)
 

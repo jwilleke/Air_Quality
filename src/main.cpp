@@ -1,11 +1,15 @@
 #include <Arduino.h>
-#include <config.h>
-#include <arduino_secrets.h>
+#include <ArduinoHA.h>
+#include <arduino_secrets.h> // contains secret credentials and API keys for Arduino project.
+#include <WiFi.h>
+#include <WiFiClient.h>
+#include <Wire.h>
 #include "DFRobot_MICS.h"
 #include "DFRobot_AirQualitySensor.h"
-#include <WiFi.h>
-#include <AsyncTCP.h>
-#include <ESPAsyncWebServer.h>
+#include <arduino_secrets.h>
+#include <config.h>
+#include <ha_functions.h>
+#include <ha_config.h>
 
 AsyncWebServer server(80);
 
