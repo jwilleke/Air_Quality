@@ -11,16 +11,6 @@ AsyncWebServer server(80);
 
 //#define DEBUG_PRINT_ENABLED // Comment out this line of code if you don't want to see the debug print
 
-#if defined(DEBUG_PRINT_ENABLED)
-  #define DEBUG_INIT() Serial.begin(115200);
-  #define DEBUG_PRINT(x) Serial.print(x);
-  #define DEBUG_PRINTLN(x) Serial.println(x);
-#else
-  #define DEBUG_INIT()
-  #define DEBUG_PRINTLN(x)
-  #define DEBUG_PRINT(x)
-#endif
-
 #define CALIBRATION_TIME 3 // needed for MICS
 #define I2C_COMMUNICATION  // I2C communication. Comment out this line of code if you want to use SPI communication.
 #define PM_I2C_ADDRESS 0x19
