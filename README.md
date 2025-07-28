@@ -30,7 +30,6 @@ PM10 concentration:0 ug/m3
 ===============================================================================
 ```
 
-
 packages:
   Everything_Smart_Technology.Everything_Presence_One: github://everythingsmarthome/presence-one/everything-presence-one.yaml@main
   

@@ -24,7 +24,8 @@
  * MICS_ADDRESS_2               0x77
  * MICS_ADDRESS_3               0x78
  */
-#define MICS_I2C_ADDRESS MICS_ADDRESS_0
+#define MICS_I2C_ADDRESS MICS_ADDRESS_0 // MICS I2C address (0x75), you can change it to MICS_ADDRESS_1 (0x76), MICS_ADDRESS_2 (0x77), or MICS_ADDRESS_3 (0x78)
+#define PM_I2C_ADDRESS 0x19 // PM2.5 I2C address (0x19), you can change it to 0x18 or 0x1A if needed
 #define CALIBRATION_TIME 3 // Default calibration time is three minutes
 #define I2C_COMMUNICATION  // I2C communication. Comment out this line of code if you want to use SPI communication.
 

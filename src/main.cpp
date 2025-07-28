@@ -6,7 +6,6 @@
 #include <Wire.h>
 #include "DFRobot_MICS.h"
 #include "DFRobot_AirQualitySensor.h"
-#include <arduino_secrets.h>
 #include <config.h>
 #include <ha_functions.h>
 #include <ha_config.h>
