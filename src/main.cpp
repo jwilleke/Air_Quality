@@ -21,6 +21,7 @@ WiFiClient wifiClient;
 // Aq1 mac: B0:A7:32:36:29:A4
 char ssid[] = SECRET_SSID; // your network SSID (name)
 char pass[] = SECRET_PASS; // your network password (use for WPA, or use as key for WEP)
+bool wifi_failure = false;
 char mqttUser[] = MQTT_HA_BROKER_USERNAME;
 char mqttUserPass[] = MQTT_HA_BROKER_PASSWORD;
 char deviceName[] = "aq1";
@@ -61,85 +62,175 @@ HASensorNumber pm_2_5("pm_2_5", HASensorNumber::PrecisionP3);
 HASensorNumber pm_10("pm_10", HASensorNumber::PrecisionP3);
 // ==================== END SENSOR DEFINITiON ====================
 
+
+/**
+ * Print the current network information
+ */
+void printCurrentNet(WiFiClass &wifi, String id)
+{
+  Serial.printf("Connected to %s, IP: %s, RSSI: %d dBm\n",
+                wifi.SSID().c_str(), wifi.localIP().toString().c_str(), wifi.RSSI());
+}
+
 // To get us out of trouble
 bool failure = false;
 int errorCondition = 0;
 
 const char *PARAM_MESSAGE = "message";
 
-/**
- * A mrhod to not have to find and look up these things
- */
-struct MICS_Addresses
-{
+struct MICS_Addresses {
   const char *name;
   byte hexValue;
 };
 
-MICS_Addresses mics_Address[] = {{"Carbon Monoxide", 0x01}, {"Methane", 0x02}, {"Ethanol", 0x03}, {"Propane", 0x04}, {"Iso Butane", 0x05}, {"Hydrogen", 0x06}, {"Hydrothion", 0x07}, {"Ammonia", 0x08}, {"Nitric Oxide", 0x09}, {"Nitrogen Dioxide", 0x10}};
+MICS_Addresses mics_Address[] = {
+  {"Carbon Monoxide", 0x01}, {"Methane", 0x02}, {"Ethanol", 0x03}, {"Propane", 0x04},
+  {"Iso Butane", 0x05}, {"Hydrogen", 0x06}, {"Hydrothion", 0x07}, {"Ammonia", 0x08},
+  {"Nitric Oxide", 0x09}, {"Nitrogen Dioxide", 0x10}
+};
 
-/**
- * Get the name of the gas from the hexValue
- */
-const char *getMICSNameFromHexValue(byte hexValue)
-{
-  for (MICS_Addresses address : mics_Address)
-  {
-    if (address.hexValue == hexValue)
-    {
-      return address.name; // Return the name if a match is found
+const char *getMICSNameFromHexValue(byte hexValue) {
+  for (MICS_Addresses address : mics_Address) {
+    if (address.hexValue == hexValue) {
+      return address.name;
     }
   }
-  return "Unknown"; // Return "Unknown" if no match found
+  return "Unknown";
 }
 
-void dumpMICSData(uint8_t hexValue)
-{
-  float gasdata = float(MICS.getGasData(hexValue));
-  DEBUG_PRINT(getMICSNameFromHexValue(hexValue));
-  DEBUG_PRINT(": ");
-  if (gasdata != -1)
-  { // got gasdata
-    DEBUG_PRINT(float(MICS.getGasData(hexValue)));
-    DEBUG_PRINT(" PPM");
+void dumpMICSData(uint8_t hexValue) {
+  Serial.printf("Dumping MICS-4514 for hexValue: 0x%02X\n", hexValue);
+  Serial.printf("Gas: %s\n", getMICSNameFromHexValue(hexValue));
+  // Placeholder: Replace with actual MICS.getGasData call once library is provided
+  Wire.beginTransmission(MICS_I2C_ADDRESS);
+  Wire.write(0x00);
+  if (Wire.endTransmission() == 0) {
+    Wire.requestFrom(MICS_I2C_ADDRESS, 8);
+    if (Wire.available() >= 8) {
+      uint8_t data[8];
+      for (int i = 0; i < 8; i++) {
+        data[i] = Wire.read();
+      }
+      Serial.printf("Raw Bytes: %02X %02X %02X %02X %02X %02X %02X %02X\n", 
+                    data[0], data[1], data[2], data[3], data[4], data[5], data[6], data[7]);
+    } else {
+      Serial.println("MiCS-4514 read failed!");
+    }
+  } else {
+    Serial.println("MiCS-4514 not found!");
   }
-  int8_t gasFlag = MICS.getGasExist(hexValue);
-  DEBUG_PRINT(" Present?");
-  if (gasFlag == EXIST)
-  { // print it
-    DEBUG_PRINTLN(" YES! ");
+  Serial.println("---------------------");
+}
+
+/**
+ * Read the MiCS-4514 sensor data
+ * This function reads the MiCS-4514 sensor data and prints it to the Serial Monitor.
+ */
+void readMiCS4514() {
+  Wire.beginTransmission(MICS_I2C_ADDRESS);
+  Wire.write(0x00);
+  if (Wire.endTransmission() != 0) {
+    Serial.println("MiCS-4514 not found!");
+    return;
   }
-  else
-  {
-    DEBUG_PRINTLN(" NO ");
+  Wire.requestFrom(MICS_I2C_ADDRESS, 8);
+  if (Wire.available() >= 8) {
+    uint8_t data[8];
+    for (int i = 0; i < 8; i++) {
+      data[i] = Wire.read();
+    }
+    Serial.println("MiCS-4514 Raw Data:");
+    Serial.printf("Bytes: %02X %02X %02X %02X %02X %02X %02X %02X\n", 
+                  data[0], data[1], data[2], data[3], data[4], data[5], data[6], data[7]);
+  } else {
+    Serial.println("MiCS-4514 read failed!");
   }
+  Serial.println("---------------------");
 }
 
 void setup()
 {
 
-  DEBUG_INIT()
+  DEBUG_INIT();
   while (!Serial)
     ; // Wait for serial to be ready
   Serial.println("Starting setup...");
 
-  WiFi.mode(WIFI_STA);
-  WiFi.begin(ssid, pass);
-  // did we xonnext?
-  if (WiFi.waitForConnectResult() != WL_CONNECTED)
+  // Scan for networks
+  Serial.println("Scanning WiFi networks...");
+  int n = WiFi.scanNetworks();
+  int best_rssi = -100;
+  uint8_t best_bssid[6];
+  bool found_ssid = false;
+
+  if (n == 0)
   {
-    Serial.printf("WiFi Failed!\n");
-    // errorCondition = 42;
-    if (errorCondition > 0)
+    Serial.println("No networks found!");
+  }
+  else
+  {
+    Serial.printf("%d networks found:\n", n);
+    for (int i = 0; i < n; i++)
     {
-      failure = true;
-      DEBUG_PRINTLN("WiFi Failure occurred! (42)");
-    }
-    else
-    {
-      printCurrentNet(WiFi, myId);
+      if (WiFi.SSID(i) == ssid)
+      {
+        Serial.printf("Found %s: RSSI %d dBm, BSSID: %02X:%02X:%02X:%02X:%02X:%02X\n",
+                      ssid, WiFi.RSSI(i),
+                      WiFi.BSSID(i)[0], WiFi.BSSID(i)[1], WiFi.BSSID(i)[2],
+                      WiFi.BSSID(i)[3], WiFi.BSSID(i)[4], WiFi.BSSID(i)[5]);
+        if (WiFi.RSSI(i) > best_rssi)
+        {
+          best_rssi = WiFi.RSSI(i);
+          memcpy(best_bssid, WiFi.BSSID(i), 6);
+          found_ssid = true;
+        }
+      }
     }
   }
+
+  if (!found_ssid)
+  {
+    Serial.printf("SSID %s not found!\n", ssid);
+    wifi_failure = true;
+    return;
+  }
+
+  // Connect to the strongest AP
+  Serial.printf("Connecting to %s (BSSID: %02X:%02X:%02X:%02X:%02X:%02X)\n",
+                ssid, best_bssid[0], best_bssid[1], best_bssid[2],
+                best_bssid[3], best_bssid[4], best_bssid[5]);
+  WiFi.begin(ssid, pass, 0, best_bssid); // Use BSSID to target specific AP
+  int retries = 3;
+  int status = WL_IDLE_STATUS;
+
+  while (retries > 0 && status != WL_CONNECTED)
+  {
+    status = WiFi.waitForConnectResult(10000);
+    if (status != WL_CONNECTED)
+    {
+      Serial.printf("WiFi Failed! Status: %d, Retries left: %d\n", status, retries - 1);
+      if (status == WL_CONNECTION_LOST)
+      {
+        Serial.println("Connection lost during attempt. Retrying...");
+      }
+      WiFi.begin(ssid, pass, 0, best_bssid); // Retry with same BSSID
+      retries--;
+      delay(2000);
+    }
+  }
+
+  if (status != WL_CONNECTED)
+  {
+    Serial.println("WiFi Connection Failed!");
+    failure = true;
+    Serial.println("WiFi Failure occurred!");
+  }
+  else
+  {
+    Serial.println("WiFi Connected!");
+    printCurrentNet(WiFi, "ESP32");
+  }
+
   // set device's details (optional)
   device.setSoftwareVersion("1.0.0");
   device.setManufacturer("dfrobot");
@@ -252,6 +343,8 @@ void setup()
   }
 } // end of setup
 
+bool jim_debug = true;
+
 void loop()
 {
   mqtt.loop();
@@ -269,61 +362,88 @@ void loop()
     /**
      * @brief We need to wait until the senors is heated to get the correct data
      */
-    if (millis() - startupTime >= calibrationTime)
+    if ((millis() - startupTime >= calibrationTime) || jim_debug)
     {
-      // read from the carbon_monoxide sensor
-      carbon_monoxide.setValue(MICS.getGasData(0x01));
-      DEBUG_PRINT("Carbon Monoxide: ");
-      DEBUG_PRINTLN(MICS.getGasData(0x01));
-      // read from the methane sensor
-      methane.setValue(MICS.getGasData(0x02));
-      DEBUG_PRINT("Methane: ");
-      DEBUG_PRINTLN(MICS.getGasData(0x02));
-      // read from the ethanol sensor
-      ethanol.setValue(MICS.getGasData(0x03));
-      DEBUG_PRINT("Ethanol: ");
-      DEBUG_PRINTLN(MICS.getGasData(0x03));
-      // read from the hydrogen sensor
-      hydrogen.setValue(MICS.getGasData(0x06));
-      DEBUG_PRINT("Hydrogen: ");
-      DEBUG_PRINTLN(MICS.getGasData(0x06));
-      // read from the ammonia sensor
-      ammonia.setValue(MICS.getGasData(0x08));
-      DEBUG_PRINT("Ammonia: ");
-      DEBUG_PRINTLN(MICS.getGasData(0x08));
-      // read from the propane sensor
-      propane.setValue(MICS.getGasExist(0x04));
-      DEBUG_PRINT("Propane: ");
-      DEBUG_PRINTLN(MICS.getGasExist(0x04));
-      // read from the butane sensor
-      butane.setValue(MICS.getGasExist(0x05));
-      DEBUG_PRINT("Butane: ");
-      DEBUG_PRINTLN(MICS.getGasExist(0x05));
-      // read from the no sensor
-      no.setValue(MICS.getGasExist(0x09));
-      DEBUG_PRINT("Nitric Oxide: ");
-      DEBUG_PRINTLN(MICS.getGasExist(0x09));
-  
-      // read from the no2 sensor
-      no2.setValue(MICS.getGasData(0x10));
-      DEBUG_PRINT("Nitrogen Dioxide: ");
-      DEBUG_PRINTLN(MICS.getGasData(0x10));
-      // read from the pm_1_0 sensor
-      pm_1_0.setValue(particle.gainParticleConcentration_ugm3(PARTICLE_PM1_0_ATMOSPHERE));
-      DEBUG_PRINT("PM1.0 concentration:");
-      DEBUG_PRINT(particle.gainParticleConcentration_ugm3(PARTICLE_PM1_0_ATMOSPHERE));
-      DEBUG_PRINTLN(" ug/m3");
-      // read from the pm_2_5 sensor
-      pm_2_5.setValue(particle.gainParticleConcentration_ugm3(PARTICLE_PM2_5_ATMOSPHERE));
-      DEBUG_PRINT("PM2.5 concentration:");
-      DEBUG_PRINT(particle.gainParticleConcentration_ugm3(PARTICLE_PM2_5_ATMOSPHERE));
-      DEBUG_PRINTLN(" ug/m3");
-      // read from the pm_10 sensor
-      pm_10.setValue(particle.gainParticleConcentration_ugm3(PARTICLE_PM10_ATMOSPHERE));
-      DEBUG_PRINT("PM10 concentration:");
-      DEBUG_PRINT(particle.gainParticleConcentration_ugm3(PARTICLE_PM10_ATMOSPHERE));
-      DEBUG_PRINTLN(" ug/m3");
+      if (jim_debug)
+      {
+        DEBUG_PRINTLN("DBUG Sensors");
+        // Read PM2.5 sensor
+        uint16_t pm1_0 = particle.gainParticleConcentration_ugm3(PARTICLE_PM1_0_STANDARD);
+        uint16_t pm2_5 = particle.gainParticleConcentration_ugm3(PARTICLE_PM2_5_STANDARD);
+        uint16_t pm10 = particle.gainParticleConcentration_ugm3(PARTICLE_PM10_STANDARD);
+        uint16_t particles_03um = particle.gainParticleNum_Every0_1L(PARTICLE_PM1_0_ATMOSPHERE);
+        uint16_t particles_05um = particle.gainParticleNum_Every0_1L(PARTICLE_PM2_5_ATMOSPHERE);
+        uint16_t particles_10um = particle.gainParticleNum_Every0_1L(PARTICLE_PM10_ATMOSPHERE);
 
+        Serial.println("PM2.5 Sensor Readings:");
+        Serial.printf("PM1.0: %d ug/m3\n", pm1_0);
+        Serial.printf("PM2.5: %d ug/m3\n", pm2_5);
+        Serial.printf("PM10: %d ug/m3\n", pm10);
+        Serial.printf("Particles >0.3um: %d /0.1L\n", particles_03um);
+        Serial.printf("Particles >0.5um: %d /0.1L\n", particles_05um);
+        Serial.printf("Particles >1.0um: %d /0.1L\n", particles_10um);
+        Serial.println("---------------------");
+
+        // Read MiCS-4514
+        readMiCS4514();
+      }
+      else
+      {
+
+        // read from the carbon_monoxide sensor
+        carbon_monoxide.setValue(MICS.getGasData(0x01));
+        DEBUG_PRINT("Carbon Monoxide: ");
+        DEBUG_PRINTLN(MICS.getGasData(0x01));
+        // read from the methane sensor
+        methane.setValue(MICS.getGasData(0x02));
+        DEBUG_PRINT("Methane: ");
+        DEBUG_PRINTLN(MICS.getGasData(0x02));
+        // read from the ethanol sensor
+        ethanol.setValue(MICS.getGasData(0x03));
+        DEBUG_PRINT("Ethanol: ");
+        DEBUG_PRINTLN(MICS.getGasData(0x03));
+        // read from the hydrogen sensor
+        hydrogen.setValue(MICS.getGasData(0x06));
+        DEBUG_PRINT("Hydrogen: ");
+        DEBUG_PRINTLN(MICS.getGasData(0x06));
+        // read from the ammonia sensor
+        ammonia.setValue(MICS.getGasData(0x08));
+        DEBUG_PRINT("Ammonia: ");
+        DEBUG_PRINTLN(MICS.getGasData(0x08));
+        // read from the propane sensor
+        propane.setValue(MICS.getGasExist(0x04));
+        DEBUG_PRINT("Propane: ");
+        DEBUG_PRINTLN(MICS.getGasExist(0x04));
+        // read from the butane sensor
+        butane.setValue(MICS.getGasExist(0x05));
+        DEBUG_PRINT("Butane: ");
+        DEBUG_PRINTLN(MICS.getGasExist(0x05));
+        // read from the no sensor
+        no.setValue(MICS.getGasExist(0x09));
+        DEBUG_PRINT("Nitric Oxide: ");
+        DEBUG_PRINTLN(MICS.getGasExist(0x09));
+
+        // read from the no2 sensor
+        no2.setValue(MICS.getGasData(0x10));
+        DEBUG_PRINT("Nitrogen Dioxide: ");
+        DEBUG_PRINTLN(MICS.getGasData(0x10));
+        // read from the pm_1_0 sensor
+        // pm_1_0.setValue(particle.gainParticleConcentration_ugm3(PARTICLE_PM1_0_ATMOSPHERE));
+        pm_1_0.setValue(particle.gainParticleConcentration_ugm3(PARTICLE_PM1_0_STANDARD));
+        DEBUG_PRINT("PM1.0 concentration:");
+        DEBUG_PRINT(particle.gainParticleConcentration_ugm3(PARTICLE_PM1_0_ATMOSPHERE));
+        DEBUG_PRINTLN(" ug/m3");
+        // read from the pm_2_5 sensor
+        pm_2_5.setValue(particle.gainParticleConcentration_ugm3(PARTICLE_PM2_5_STANDARD));
+        DEBUG_PRINT("PM2.5 concentration:");
+        DEBUG_PRINT(particle.gainParticleConcentration_ugm3(PARTICLE_PM2_5_STANDARD));
+        DEBUG_PRINTLN(" ug/m3");
+        // read from the pm_10 sensor
+        pm_10.setValue(particle.gainParticleConcentration_ugm3(PARTICLE_PM10_STANDARD));
+        DEBUG_PRINT("PM10 concentration:");
+        DEBUG_PRINT(particle.gainParticleConcentration_ugm3(PARTICLE_PM10_STANDARD));
+        DEBUG_PRINTLN(" ug/m3");
+      }
     } //! end of if readCount > CALIBRATION_TIME
-  }   // end of if >= THRESHOLD
+  } // end of if >= THRESHOLD
 } // end of loop

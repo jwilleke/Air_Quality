@@ -6,6 +6,16 @@ This interface makes it compatible with various microcontrollers and single-boar
 
 We used the [DFRobot Gravity sensor](https://wiki.dfrobot.com/Gravity_PM2.5_Air_Quality_Sensor_SKU_SEN0460)
 
+! DFRobot Gravity PM2.5 Sensor (SEN0460)
+
+- Interface: I2C (address: 0x19)
+- Measures: PM1.0, PM2.5, PM10 (µg/m³) and particle counts (0.3µm, 0.5µm, etc., per 0.1L).
+- Expected PM2.5 range: 5–50 µg/m³ in typical indoor conditions; higher in polluted environments.
+
+Zero readings (as in your output) suggest the sensor may not be detecting particles, possibly due to a clean environment, blocked inlet/outlet, or wiring/code issues.
+
+
+
 ## PM2.5 air quality international standard table
 
 | Country/Organization| Annual average concentration（μg/m³| 24h average concentration（μg/m³）
