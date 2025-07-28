@@ -7,6 +7,8 @@
 #define SERIAL_BAUD_RATE 115200
 
 #define ANALOG_SUPPLY_VOLTAGE 5.0
+
+// MQTT Broker Details
 #define BROKER_ADDR IPAddress(192, 168, 68, 20) // MQTT Broker Address for normal home assistant 
 
 #define MQTT_SENSOR_COUNT 12
